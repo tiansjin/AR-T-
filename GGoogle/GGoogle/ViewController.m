@@ -238,7 +238,7 @@ static const double allowedDist = 0.03;
 #pragma mark - Rendering Current Drawing
 - (void) renderCurrentLine:(CGPoint) coordinate withBool:(BOOL) drawing{
     // Andrew, Ashley, call this function when you want to update the screen image
-    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);;
+    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
     [self.leftImage.image drawAtPoint:CGPointZero];
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -290,7 +290,7 @@ static const double allowedDist = 0.03;
 }
 
 - (void)addCurrentLine{
-    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);;
+    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
     [self.leftImage.image drawAtPoint:CGPointZero];
     CGContextRef context = UIGraphicsGetCurrentContext();
