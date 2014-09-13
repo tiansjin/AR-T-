@@ -406,6 +406,7 @@
 				94AFCCAD19C3FA810026F02B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		94AFCCAE19C3FA810026F02B /* Build configuration list for PBXNativeTarget "GGoogleTests" */ = {
 			isa = XCConfigurationList;
@@ -414,6 +415,7 @@
 				94AFCCB019C3FA810026F02B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
