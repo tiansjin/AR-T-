@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import <CoreLocation/CoreLocation.h>
 
 @interface ViewController ()
 
@@ -14,7 +15,11 @@
 @property UIView *rightScreen;
 @property UIView *leftImage;
 @property UIView *rightImage;
+@property UIImage *imageBeingDrawn;
 @property AVCaptureSession *session;
+@property CLLocationManager *loc_manager;
+@property CLLocation *location_data;
+@property CLHeading *currHeading;
 
 @end
 
@@ -28,7 +33,6 @@
     self.leftScreen.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     self.leftImage = [[UIImageView alloc] init];
     [self.view addSubview:self.leftScreen];
-    self.rightScreen = [[UIView alloc] init];
     self.rightScreen.frame = CGRectMake(self.view.frame.size.width/2, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     self.rightImage = [[UIImageView alloc] init];
     [self.view addSubview:self.rightScreen];
@@ -89,6 +93,8 @@
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
+    
+
     if (image){
         [self.leftImage removeFromSuperview];
         [self.rightImage removeFromSuperview];
@@ -99,13 +105,45 @@
         [self.leftScreen addSubview:self.leftImage];
         [self.rightScreen addSubview:self.rightImage];
     }
+    NSArray *nearImages = [self ] //get images
+    CLLocationCoordinate2D currLocation = [self getCoordinates];
+    
+    for (UIImage *image in nearImages) {
+        if (image.orientation)
+    }
 
 }
 
+- (CLLocationCoordinate2D) getCoordinates {
+    if (!self.location_data) {
+        self.location_data = [[CLLocation alloc] init];
+    }
+    CLLocationCoordinate2D coordinates = self.location_data.coordinate;
+    return coordinates;
+}
+
+- (void) startHeadingEvents {
+    if (!self.loc_manager) {
+        self.loc_manager = [[CLLocationManager alloc]init];
+    }
+    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+    if (self.loc_manager.headingAvailable) {
+        [self.loc_manager startUpdatingHeading];
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
+    self.currHeading = newHeading;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (double) getDistanceFromLoc: (double)currLat longitude:(double)currLong picLat:(double)picLat picLong:(double)picLong {
+    return ((currLat - picLat) ** 2 + (currLong + picLong) ** 2.0) **
+}
+
 
 @end

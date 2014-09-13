@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */; };
 		94AFCC9119C3FA800026F02B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9019C3FA800026F02B /* main.m */; };
 		94AFCC9419C3FA800026F02B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9319C3FA800026F02B /* AppDelegate.m */; };
 		94AFCC9719C3FA800026F02B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9619C3FA800026F02B /* ViewController.m */; };
@@ -27,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		94AFCC8B19C3FA800026F02B /* GGoogle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GGoogle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94AFCC8F19C3FA800026F02B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		94AFCC9019C3FA800026F02B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */,
 				94AFCCB219C3FAF30026F02B /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,6 +67,7 @@
 		94AFCC8219C3FA800026F02B = {
 			isa = PBXGroup;
 			children = (
+				1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */,
 				94AFCCB119C3FAF30026F02B /* AVFoundation.framework */,
 				94AFCC8D19C3FA800026F02B /* GGoogle */,
 				94AFCCA419C3FA810026F02B /* GGoogleTests */,
