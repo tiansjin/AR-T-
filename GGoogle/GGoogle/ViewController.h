@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import <CoreLocation/CoreLocation.h>
 
-@interface ViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface ViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, CLLocationManagerDelegate>
 
 
 @end

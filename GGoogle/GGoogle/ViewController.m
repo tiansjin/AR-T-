@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import <CoreLocation/CoreLocation.h>
 #import "Image.h"
 #import "AppDelegate.h"
 
@@ -35,7 +34,7 @@ static const double allowedDist = 0.03;
             
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+//     Do any additional setup after loading the view, typically from a nib.
     
     self.leftScreen = [[UIView alloc] init];
     self.leftScreen.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
@@ -72,6 +71,7 @@ static const double allowedDist = 0.03;
     [self renderCurrentLine:CGPointMake(40, 0) withBool:TRUE];
     [self renderCurrentLine:CGPointMake(40, 40) withBool:TRUE];
     [self renderCurrentLine:CGPointMake(0, 40) withBool:FALSE];
+    [self getCoordinates];
 }
 
 -(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
@@ -124,7 +124,7 @@ static const double allowedDist = 0.03;
             [self.rightScreen addSubview:self.rightImage];
         }
     }
-    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
+//    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
 //    NSLog(@"%f", self.currHeading.trueHeading);
 //    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
 //    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
@@ -152,6 +152,7 @@ static const double allowedDist = 0.03;
     }
     self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
     self.loc_manager.delegate = self;
+    [self.loc_manager requestAlwaysAuthorization];
     [self.loc_manager startUpdatingLocation];
 }
 
@@ -159,6 +160,17 @@ static const double allowedDist = 0.03;
    didUpdateToLocation:(CLLocation *)newLocation
           fromLocation:(CLLocation *)oldLocation {
     self.currLocation = newLocation;
+    NSLog(@"Got into here");
+    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
+}
+
+- (void) locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
+    NSLog(@"%@", error);
+}
+
+- (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+    CLLocation *loc = locations[0];
+    NSLog(@"%f,%f", loc.coordinate.latitude, loc.coordinate.longitude);
 }
 
 - (void) startHeadingEvents {
