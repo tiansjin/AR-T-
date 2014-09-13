@@ -142,7 +142,7 @@
 }
 
 - (double) getDistanceFromLoc: (double)currLat longitude:(double)currLong picLat:(double)picLat picLong:(double)picLong {
-    return ((currLat - picLat) ** 2 + (currLong + picLong) ** 2.0) **
+    return sqrt(pow((currLat - picLat), 2) + pow((currLong + picLong), 2.0));
 }
 
 
