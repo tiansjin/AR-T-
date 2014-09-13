@@ -52,28 +52,8 @@
     [self.session startRunning];
 }
 
-//-(void) captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
-//
-//    CVImageBufferRef *buffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-//    CIImage *ciImage = [CIImage imageWithCVPixelBuffer:buffer];
-//    UIImage *image = [[UIImage alloc] initWithCIImage:ciImage];
-//    UIImageView *display = [[UIImageView alloc] initWithImage:image];
-//    display.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
-//    [self.leftImage removeFromSuperview];
-//    [self.rightImage removeFromSuperview];
-//    self.leftImage = display;
-//    self.rightImage = display;
-//    [self.leftScreen addSubview:self.leftImage];
-//    [self.rightScreen addSubview:self.rightImage];
-//}
-
 -(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
-//    CVImageBufferRef *buffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-//    CIImage *ciImage = [CIImage imageWithCVPixelBuffer:buffer];
-//    UIImage *image = [[UIImage alloc] initWithCIImage:ciImage];
-//    UIImageView *display = [[UIImageView alloc] initWithImage:image];
-//    display.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     // Lock the base address of the pixel buffer
     CVPixelBufferLockBaseAddress(imageBuffer, 0);
