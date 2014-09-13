@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CA809CF19C41E4600367FF8 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA809CE19C41E4600367FF8 /* opencv2.framework */; };
+		1CA809D119C41F8500367FF8 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA809D019C41F8500367FF8 /* libsqlite3.dylib */; };
+		1CA809D319C429BA00367FF8 /* GGoogle.db in Resources */ = {isa = PBXBuildFile; fileRef = 1CA809D219C429BA00367FF8 /* GGoogle.db */; };
+		1CA809D519C42A2600367FF8 /* GGoogleDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA809D419C42A2600367FF8 /* GGoogleDatabase.m */; };
+		1CA809D919C4300700367FF8 /* PictureRealLife.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA809D819C4300700367FF8 /* PictureRealLife.m */; };
 		94AFCC9119C3FA800026F02B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9019C3FA800026F02B /* main.m */; };
 		94AFCC9419C3FA800026F02B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9319C3FA800026F02B /* AppDelegate.m */; };
 		94AFCC9719C3FA800026F02B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9619C3FA800026F02B /* ViewController.m */; };
@@ -27,6 +32,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1CA809CE19C41E4600367FF8 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = "../../../Downloads/opencv-2.4.9/platforms/ios/opencv2.framework/opencv2.framework"; sourceTree = "<group>"; };
+		1CA809D019C41F8500367FF8 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		1CA809D219C429BA00367FF8 /* GGoogle.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = GGoogle.db; path = ../GGoogle.db; sourceTree = "<group>"; };
+		1CA809D419C42A2600367FF8 /* GGoogleDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGoogleDatabase.m; sourceTree = "<group>"; };
+		1CA809D619C42CA300367FF8 /* GGoogleDatabase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GGoogleDatabase.h; sourceTree = "<group>"; };
+		1CA809D719C4300700367FF8 /* PictureRealLife.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureRealLife.h; sourceTree = "<group>"; };
+		1CA809D819C4300700367FF8 /* PictureRealLife.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PictureRealLife.m; sourceTree = "<group>"; };
 		94AFCC8B19C3FA800026F02B /* GGoogle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GGoogle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94AFCC8F19C3FA800026F02B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		94AFCC9019C3FA800026F02B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -47,6 +59,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CA809D119C41F8500367FF8 /* libsqlite3.dylib in Frameworks */,
+				1CA809CF19C41E4600367FF8 /* opencv2.framework in Frameworks */,
 				94AFCCB219C3FAF30026F02B /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,10 +78,13 @@
 		94AFCC8219C3FA800026F02B = {
 			isa = PBXGroup;
 			children = (
+				1CA809D219C429BA00367FF8 /* GGoogle.db */,
+				1CA809D019C41F8500367FF8 /* libsqlite3.dylib */,
 				94AFCCB119C3FAF30026F02B /* AVFoundation.framework */,
 				94AFCC8D19C3FA800026F02B /* GGoogle */,
 				94AFCCA419C3FA810026F02B /* GGoogleTests */,
 				94AFCC8C19C3FA800026F02B /* Products */,
+				1CA809CE19C41E4600367FF8 /* opencv2.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -87,6 +104,10 @@
 				94AFCC9319C3FA800026F02B /* AppDelegate.m */,
 				94AFCC9519C3FA800026F02B /* ViewController.h */,
 				94AFCC9619C3FA800026F02B /* ViewController.m */,
+				1CA809D619C42CA300367FF8 /* GGoogleDatabase.h */,
+				1CA809D419C42A2600367FF8 /* GGoogleDatabase.m */,
+				1CA809D719C4300700367FF8 /* PictureRealLife.h */,
+				1CA809D819C4300700367FF8 /* PictureRealLife.m */,
 				94AFCC9819C3FA800026F02B /* Main.storyboard */,
 				94AFCC9B19C3FA800026F02B /* Images.xcassets */,
 				94AFCC8E19C3FA800026F02B /* Supporting Files */,
@@ -201,6 +222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				94AFCC9A19C3FA800026F02B /* Main.storyboard in Resources */,
+				1CA809D319C429BA00367FF8 /* GGoogle.db in Resources */,
 				94AFCC9C19C3FA800026F02B /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -220,8 +242,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				94AFCC9719C3FA800026F02B /* ViewController.m in Sources */,
+				1CA809D519C42A2600367FF8 /* GGoogleDatabase.m in Sources */,
 				94AFCC9419C3FA800026F02B /* AppDelegate.m in Sources */,
 				94AFCC9119C3FA800026F02B /* main.m in Sources */,
+				1CA809D919C4300700367FF8 /* PictureRealLife.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +360,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/Rohan/Downloads/opencv-2.4.9/platforms/ios/opencv2.framework",
+				);
 				INFOPLIST_FILE = GGoogle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -348,6 +376,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/Rohan/Downloads/opencv-2.4.9/platforms/ios/opencv2.framework",
+				);
 				INFOPLIST_FILE = GGoogle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
