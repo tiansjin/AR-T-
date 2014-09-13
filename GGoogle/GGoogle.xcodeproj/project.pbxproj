@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */; };
-		61B4D3A719C4DC89007D38B5 /* MyoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B4D3A619C4DC89007D38B5 /* MyoKit.framework */; };
+		61B4D3A919C4DF3E007D38B5 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B4D3A819C4DF3E007D38B5 /* CoreBluetooth.framework */; };
+		61B4D3AB19C4DF5D007D38B5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B4D3AA19C4DF5D007D38B5 /* SystemConfiguration.framework */; };
+		61B4D3AD19C4E0EA007D38B5 /* MyoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B4D3AC19C4E0EA007D38B5 /* MyoKit.framework */; };
 		9495AD9419C4B6EC008FF974 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9495AD9219C4B6EC008FF974 /* Model.xcdatamodeld */; };
 		9495AD9719C4B72D008FF974 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 9495AD9619C4B72D008FF974 /* Image.m */; };
 		94AFCC9119C3FA800026F02B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9019C3FA800026F02B /* main.m */; };
@@ -33,7 +35,9 @@
 
 /* Begin PBXFileReference section */
 		1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		61B4D3A619C4DC89007D38B5 /* MyoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MyoKit.framework; path = "../../Downloads/myo-ios-sdk-beta1/MyoKit.framework"; sourceTree = "<group>"; };
+		61B4D3A819C4DF3E007D38B5 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		61B4D3AA19C4DF5D007D38B5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		61B4D3AC19C4E0EA007D38B5 /* MyoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MyoKit.framework; path = ../MyoKit.framework; sourceTree = "<group>"; };
 		9495AD9319C4B6EC008FF974 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		9495AD9519C4B72D008FF974 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		9495AD9619C4B72D008FF974 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
@@ -58,7 +62,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61B4D3A719C4DC89007D38B5 /* MyoKit.framework in Frameworks */,
+				61B4D3AD19C4E0EA007D38B5 /* MyoKit.framework in Frameworks */,
+				61B4D3AB19C4DF5D007D38B5 /* SystemConfiguration.framework in Frameworks */,
+				61B4D3A919C4DF3E007D38B5 /* CoreBluetooth.framework in Frameworks */,
 				1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */,
 				94F3F43A19C4B68000DA5850 /* CoreData.framework in Frameworks */,
 				94AFCCB219C3FAF30026F02B /* AVFoundation.framework in Frameworks */,
@@ -78,7 +84,9 @@
 		94AFCC8219C3FA800026F02B = {
 			isa = PBXGroup;
 			children = (
-				61B4D3A619C4DC89007D38B5 /* MyoKit.framework */,
+				61B4D3AC19C4E0EA007D38B5 /* MyoKit.framework */,
+				61B4D3AA19C4DF5D007D38B5 /* SystemConfiguration.framework */,
+				61B4D3A819C4DF3E007D38B5 /* CoreBluetooth.framework */,
 				1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */,
 				94F3F43919C4B68000DA5850 /* CoreData.framework */,
 				94AFCCB119C3FAF30026F02B /* AVFoundation.framework */,
@@ -358,11 +366,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/Users/ashleylai/Downloads/sdk,
-					"/Users/ashleylai/Downloads/myo-ios-sdk-beta1",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/";
 				INFOPLIST_FILE = GGoogle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -375,11 +379,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/Users/ashleylai/Downloads/sdk,
-					"/Users/ashleylai/Downloads/myo-ios-sdk-beta1",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/";
 				INFOPLIST_FILE = GGoogle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
