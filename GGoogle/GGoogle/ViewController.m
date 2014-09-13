@@ -115,7 +115,6 @@ static const double allowedDist = 0.03;
         [self.leftScreen addSubview:self.leftImage];
         [self.rightScreen addSubview:self.rightImage];
     }
-    
 //    CLLocationCoordinate2D currLocation = [self getCoordinates];
 //    NSArray *constraints = [self getDistanceAllowedFromLoc: currLocation];
 //    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",

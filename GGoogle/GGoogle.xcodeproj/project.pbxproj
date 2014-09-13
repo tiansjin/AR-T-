@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */; };
+		61B4D3A719C4DC89007D38B5 /* MyoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B4D3A619C4DC89007D38B5 /* MyoKit.framework */; };
 		9495AD9419C4B6EC008FF974 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9495AD9219C4B6EC008FF974 /* Model.xcdatamodeld */; };
 		9495AD9719C4B72D008FF974 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 9495AD9619C4B72D008FF974 /* Image.m */; };
 		94AFCC9119C3FA800026F02B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9019C3FA800026F02B /* main.m */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		61B4D3A619C4DC89007D38B5 /* MyoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MyoKit.framework; path = "../../Downloads/myo-ios-sdk-beta1/MyoKit.framework"; sourceTree = "<group>"; };
 		9495AD9319C4B6EC008FF974 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		9495AD9519C4B72D008FF974 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		9495AD9619C4B72D008FF974 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61B4D3A719C4DC89007D38B5 /* MyoKit.framework in Frameworks */,
 				1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */,
 				94F3F43A19C4B68000DA5850 /* CoreData.framework in Frameworks */,
 				94AFCCB219C3FAF30026F02B /* AVFoundation.framework in Frameworks */,
@@ -75,6 +78,7 @@
 		94AFCC8219C3FA800026F02B = {
 			isa = PBXGroup;
 			children = (
+				61B4D3A619C4DC89007D38B5 /* MyoKit.framework */,
 				1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */,
 				94F3F43919C4B68000DA5850 /* CoreData.framework */,
 				94AFCCB119C3FAF30026F02B /* AVFoundation.framework */,
@@ -103,8 +107,6 @@
 				94AFCC9619C3FA800026F02B /* ViewController.m */,
 				9495AD9519C4B72D008FF974 /* Image.h */,
 				9495AD9619C4B72D008FF974 /* Image.m */,
-				1CA809D619C42CA300367FF8 /* GGoogleDatabase.h */,
-				1CA809D419C42A2600367FF8 /* GGoogleDatabase.m */,
 				94AFCC9819C3FA800026F02B /* Main.storyboard */,
 				94AFCC9B19C3FA800026F02B /* Images.xcassets */,
 				94AFCC8E19C3FA800026F02B /* Supporting Files */,
@@ -219,7 +221,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				94AFCC9A19C3FA800026F02B /* Main.storyboard in Resources */,
-				1CA809D319C429BA00367FF8 /* GGoogle.db in Resources */,
 				94AFCC9C19C3FA800026F02B /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,7 +240,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				94AFCC9719C3FA800026F02B /* ViewController.m in Sources */,
-				1CA809D519C42A2600367FF8 /* GGoogleDatabase.m in Sources */,
 				9495AD9419C4B6EC008FF974 /* Model.xcdatamodeld in Sources */,
 				9495AD9719C4B72D008FF974 /* Image.m in Sources */,
 				94AFCC9419C3FA800026F02B /* AppDelegate.m in Sources */,
@@ -360,7 +360,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/Rohan/Downloads/opencv-2.4.9/platforms/ios/opencv2.framework",
+					/Users/ashleylai/Downloads/sdk,
+					"/Users/ashleylai/Downloads/myo-ios-sdk-beta1",
 				);
 				INFOPLIST_FILE = GGoogle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -376,7 +377,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/Rohan/Downloads/opencv-2.4.9/platforms/ios/opencv2.framework",
+					/Users/ashleylai/Downloads/sdk,
+					"/Users/ashleylai/Downloads/myo-ios-sdk-beta1",
 				);
 				INFOPLIST_FILE = GGoogle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
