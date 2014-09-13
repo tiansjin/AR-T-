@@ -20,7 +20,7 @@
 @property UIImage *imageBeingDrawn;
 @property AVCaptureSession *session;
 @property CLLocationManager *loc_manager;
-@property CLLocation *location_data;
+@property CLLocation *currLocation;
 @property CLHeading *currHeading;
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -115,32 +115,38 @@ static const double allowedDist = 0.03;
         [self.leftScreen addSubview:self.leftImage];
         [self.rightScreen addSubview:self.rightImage];
     }
-//    CLLocationCoordinate2D currLocation = [self getCoordinates];
-//    NSArray *constraints = [self getDistanceAllowedFromLoc: currLocation];
+    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
+//    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
 //    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
 //                                   constraints[0], constraints[2], constraints[3], constraints[1]];
 //    NSArray *nearImages = [self fetchImages:queryPredicate]; //get images
 //    for (Image *image in nearImages) {
-//        double distanceToImg = [self getDistanceFromLoc:currLocation.latitude longitude:currLocation.longitude
+//        double distanceToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude
 //                                                  picLat:image.latitude.doubleValue picLong:image.longitude.doubleValue];
 //        if (image.orientation )
 //    };
 
 }
 
-- (CLLocationCoordinate2D) getCoordinates {
-    if (!self.location_data) {
-        self.location_data = [[CLLocation alloc] init];
+- (void) getCoordinates {
+    if (!self.loc_manager) {
+        self.loc_manager = [[CLLocationManager alloc] init];
     }
-    CLLocationCoordinate2D coordinates = self.location_data.coordinate;
-    return coordinates;
+    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
+    [self.loc_manager startUpdatingLocation];
+}
+
+-(void)locationManager:(CLLocationManager *)manager
+   didUpdateToLocation:(CLLocation *)newLocation
+          fromLocation:(CLLocation *)oldLocation {
+    self.currLocation = newLocation;
 }
 
 - (void) startHeadingEvents {
     if (!self.loc_manager) {
-        self.loc_manager = [[CLLocationManager alloc]init];
+        self.loc_manager = [[CLLocationManager alloc] init];
     }
-    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
     if (self.loc_manager.headingAvailable) {
         [self.loc_manager startUpdatingHeading];
     }
@@ -150,14 +156,13 @@ static const double allowedDist = 0.03;
     self.currHeading = newHeading;
 }
 
-- (NSArray *) getDistanceAllowedFromLoc: (CLLocationCoordinate2D)currLocation {
-    double lat = currLocation.latitude;
-    double lon = currLocation.longitude;
+- (NSArray *) getDistanceAllowedFromLoc: (CLLocation *)currLocation {
+    double lat = currLocation.coordinate.latitude;
+    double lon = currLocation.coordinate.longitude;
     double bottom = lat - allowedDist;
     double left = lon - allowedDist;
     double top = lat + allowedDist;
     double right = lon + allowedDist;
-//    NSArray *contraints = [NSArray arrayWithObjects:(long - self.allowedDist), (lat - self.allowedDist), long + self.allowedDist, lat + self.allowedDist, nil];]
     NSArray *constraints = @[@(left), @(top), @(right), @(bottom)];
     return constraints;
 }
