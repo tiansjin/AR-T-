@@ -42,7 +42,7 @@
 
     AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
     [output setSampleBufferDelegate:self
-                              queue:dispatch_queue_create("VideoSampleQueue", DISPATCH_QUEUE_PRIORITY_DEFAULT)];
+                              queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
     [output setAlwaysDiscardsLateVideoFrames:YES];
     [output setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
     [output setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
@@ -52,28 +52,43 @@
     [self.session startRunning];
 }
 
-//-(void) captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
-//
-//    CVImageBufferRef *buffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-//    CIImage *ciImage = [CIImage imageWithCVPixelBuffer:buffer];
-//    UIImage *image = [[UIImage alloc] initWithCIImage:ciImage];
-//    UIImageView *display = [[UIImageView alloc] initWithImage:image];
-//    display.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
-//    [self.leftImage removeFromSuperview];
-//    [self.rightImage removeFromSuperview];
-//    self.leftImage = display;
-//    self.rightImage = display;
-//    [self.leftScreen addSubview:self.leftImage];
-//    [self.rightScreen addSubview:self.rightImage];
-//}
-
 -(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
-    CVImageBufferRef *buffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    CIImage *ciImage = [CIImage imageWithCVPixelBuffer:buffer];
-    UIImage *image = [[UIImage alloc] initWithCIImage:ciImage];
-//    UIImageView *display = [[UIImageView alloc] initWithImage:image];
-//    display.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    // Lock the base address of the pixel buffer
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    
+    // Get the number of bytes per row for the pixel buffer
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    // Get the number of bytes per row for the pixel buffer
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    // Get the pixel buffer width and height
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    // Create a device-dependent RGB color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // Create a bitmap graphics context with the sample buffer data
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8,
+                                                 bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+    // Unlock the pixel buffer
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    // Free up the context and color space
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    UIImage *newImage = [UIImage imageWithCGImage:quartzImage];
+    CFRelease(quartzImage);
+
+    UIGraphicsBeginImageContext(CGSizeMake(self.view.frame.size.width/2, self.view.frame.size.height));
+    [newImage drawInRect:CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height)];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
     if (image){
         [self.leftImage removeFromSuperview];
         [self.rightImage removeFromSuperview];
@@ -86,6 +101,7 @@
     }
 
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
