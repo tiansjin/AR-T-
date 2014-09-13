@@ -42,7 +42,7 @@
 
     AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
     [output setSampleBufferDelegate:self
-                              queue:dispatch_queue_create("VideoSampleQueue", DISPATCH_QUEUE_PRIORITY_DEFAULT)];
+                              queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
     [output setAlwaysDiscardsLateVideoFrames:YES];
     [output setVideoSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
     [output setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
@@ -81,7 +81,14 @@
     // Free up the context and color space
     CGContextRelease(context);
     CGColorSpaceRelease(colorSpace);
-    UIImage *image = [UIImage imageWithCGImage:quartzImage];
+    UIImage *newImage = [UIImage imageWithCGImage:quartzImage];
+    CFRelease(quartzImage);
+
+    UIGraphicsBeginImageContext(CGSizeMake(self.view.frame.size.width/2, self.view.frame.size.height));
+    [newImage drawInRect:CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height)];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
     if (image){
         [self.leftImage removeFromSuperview];
         [self.rightImage removeFromSuperview];
@@ -94,6 +101,7 @@
     }
 
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
