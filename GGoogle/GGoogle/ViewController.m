@@ -37,6 +37,7 @@
     self.leftScreen.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     self.leftImage = [[UIImageView alloc] init];
     [self.view addSubview:self.leftScreen];
+    self.rightScreen = [[UIView alloc] init];
     self.rightScreen.frame = CGRectMake(self.view.frame.size.width/2, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     self.rightImage = [[UIImageView alloc] init];
     [self.view addSubview:self.rightScreen];
@@ -112,12 +113,12 @@
         [self.leftScreen addSubview:self.leftImage];
         [self.rightScreen addSubview:self.rightImage];
     }
-    NSArray *nearImages = [self ] //get images
+    //NSArray *nearImages = [self ] //get images
     CLLocationCoordinate2D currLocation = [self getCoordinates];
     
-    for (UIImage *image in nearImages) {
-        if (image.orientation)
-    }
+    //for (UIImage *image in nearImages) {
+    //    if (image.orientation)
+    //}
 
 }
 
