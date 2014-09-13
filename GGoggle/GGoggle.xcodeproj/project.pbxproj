@@ -12,6 +12,7 @@
 		94FAE3D219C3D1DB0028D5C6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94FAE3D019C3D1DB0028D5C6 /* Main.storyboard */; };
 		94FAE3D419C3D1DB0028D5C6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94FAE3D319C3D1DB0028D5C6 /* Images.xcassets */; };
 		94FAE3E019C3D1DB0028D5C6 /* GGoggleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FAE3DF19C3D1DB0028D5C6 /* GGoggleTests.swift */; };
+		94FAE3EA19C3D4A00028D5C6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94FAE3E919C3D4A00028D5C6 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 		94FAE3D919C3D1DB0028D5C6 /* GGoggleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GGoggleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		94FAE3DE19C3D1DB0028D5C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		94FAE3DF19C3D1DB0028D5C6 /* GGoggleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GGoggleTests.swift; sourceTree = "<group>"; };
+		94FAE3E919C3D4A00028D5C6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94FAE3EA19C3D4A00028D5C6 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +60,7 @@
 		94FAE3BE19C3D1DB0028D5C6 = {
 			isa = PBXGroup;
 			children = (
+				94FAE3E919C3D4A00028D5C6 /* AVFoundation.framework */,
 				94FAE3C919C3D1DB0028D5C6 /* GGoggle */,
 				94FAE3DC19C3D1DB0028D5C6 /* GGoggleTests */,
 				94FAE3C819C3D1DB0028D5C6 /* Products */,
@@ -158,6 +162,7 @@
 				TargetAttributes = {
 					94FAE3C619C3D1DB0028D5C6 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = 653W7TC8KR;
 					};
 					94FAE3D819C3D1DB0028D5C6 = {
 						CreatedOnToolsVersion = 6.0;
@@ -395,6 +400,7 @@
 				94FAE3E519C3D1DB0028D5C6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		94FAE3E619C3D1DB0028D5C6 /* Build configuration list for PBXNativeTarget "GGoggleTests" */ = {
 			isa = XCConfigurationList;
@@ -403,6 +409,7 @@
 				94FAE3E819C3D1DB0028D5C6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
