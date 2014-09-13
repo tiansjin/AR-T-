@@ -28,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+<<<<<<< HEAD
 		1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		94AFCC8B19C3FA800026F02B /* GGoogle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GGoogle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94AFCC8F19C3FA800026F02B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -72,6 +73,7 @@
 				94AFCC8D19C3FA800026F02B /* GGoogle */,
 				94AFCCA419C3FA810026F02B /* GGoogleTests */,
 				94AFCC8C19C3FA800026F02B /* Products */,
+				1CA809CE19C41E4600367FF8 /* opencv2.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,6 +93,10 @@
 				94AFCC9319C3FA800026F02B /* AppDelegate.m */,
 				94AFCC9519C3FA800026F02B /* ViewController.h */,
 				94AFCC9619C3FA800026F02B /* ViewController.m */,
+				1CA809D619C42CA300367FF8 /* GGoogleDatabase.h */,
+				1CA809D419C42A2600367FF8 /* GGoogleDatabase.m */,
+				1CA809D719C4300700367FF8 /* PictureRealLife.h */,
+				1CA809D819C4300700367FF8 /* PictureRealLife.m */,
 				94AFCC9819C3FA800026F02B /* Main.storyboard */,
 				94AFCC9B19C3FA800026F02B /* Images.xcassets */,
 				94AFCC8E19C3FA800026F02B /* Supporting Files */,
@@ -205,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				94AFCC9A19C3FA800026F02B /* Main.storyboard in Resources */,
+				1CA809D319C429BA00367FF8 /* GGoogle.db in Resources */,
 				94AFCC9C19C3FA800026F02B /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -224,8 +231,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				94AFCC9719C3FA800026F02B /* ViewController.m in Sources */,
+				1CA809D519C42A2600367FF8 /* GGoogleDatabase.m in Sources */,
 				94AFCC9419C3FA800026F02B /* AppDelegate.m in Sources */,
 				94AFCC9119C3FA800026F02B /* main.m in Sources */,
+				1CA809D919C4300700367FF8 /* PictureRealLife.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +349,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/Rohan/Downloads/opencv-2.4.9/platforms/ios/opencv2.framework",
+				);
 				INFOPLIST_FILE = GGoogle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -352,6 +365,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/Rohan/Downloads/opencv-2.4.9/platforms/ios/opencv2.framework",
+				);
 				INFOPLIST_FILE = GGoogle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
