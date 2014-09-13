@@ -116,6 +116,7 @@ static const double allowedDist = 0.03;
         [self.rightScreen addSubview:self.rightImage];
     }
     NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
+//    NSLog(@"%f", self.currHeading.trueHeading);
 //    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
 //    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
 //                                   constraints[0], constraints[2], constraints[3], constraints[1]];
@@ -133,6 +134,7 @@ static const double allowedDist = 0.03;
         self.loc_manager = [[CLLocationManager alloc] init];
     }
     self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
+    self.loc_manager.delegate = self;
     [self.loc_manager startUpdatingLocation];
 }
 
