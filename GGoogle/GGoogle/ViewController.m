@@ -28,6 +28,8 @@
 @end
 
 @implementation ViewController
+
+static const double allowedDist = 0.03;
             
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -37,6 +39,7 @@
     self.leftScreen.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     self.leftImage = [[UIImageView alloc] init];
     [self.view addSubview:self.leftScreen];
+    self.rightScreen = [[UIView alloc] init];
     self.rightScreen.frame = CGRectMake(self.view.frame.size.width/2, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     self.rightImage = [[UIImageView alloc] init];
     [self.view addSubview:self.rightScreen];
@@ -112,12 +115,17 @@
         [self.leftScreen addSubview:self.leftImage];
         [self.rightScreen addSubview:self.rightImage];
     }
-    NSArray *nearImages = [self ] //get images
-    CLLocationCoordinate2D currLocation = [self getCoordinates];
     
-    for (UIImage *image in nearImages) {
-        if (image.orientation)
-    }
+//    CLLocationCoordinate2D currLocation = [self getCoordinates];
+//    NSArray *constraints = [self getDistanceAllowedFromLoc: currLocation];
+//    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
+//                                   constraints[0], constraints[2], constraints[3], constraints[1]];
+//    NSArray *nearImages = [self fetchImages:queryPredicate]; //get images
+//    for (Image *image in nearImages) {
+//        double distanceToImg = [self getDistanceFromLoc:currLocation.latitude longitude:currLocation.longitude
+//                                                  picLat:image.latitude.doubleValue picLong:image.longitude.doubleValue];
+//        if (image.orientation )
+//    };
 
 }
 
@@ -141,6 +149,18 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
     self.currHeading = newHeading;
+}
+
+- (NSArray *) getDistanceAllowedFromLoc: (CLLocationCoordinate2D)currLocation {
+    double lat = currLocation.latitude;
+    double lon = currLocation.longitude;
+    double bottom = lat - allowedDist;
+    double left = lon - allowedDist;
+    double top = lat + allowedDist;
+    double right = lon + allowedDist;
+//    NSArray *contraints = [NSArray arrayWithObjects:(long - self.allowedDist), (lat - self.allowedDist), long + self.allowedDist, lat + self.allowedDist, nil];]
+    NSArray *constraints = @[@(left), @(top), @(right), @(bottom)];
+    return constraints;
 }
 
 - (BOOL) saveImage:(UIImage *)image
