@@ -15,8 +15,8 @@
 
 @property UIView *leftScreen;
 @property UIView *rightScreen;
-@property UIView *leftImage;
-@property UIView *rightImage;
+@property UIImageView *leftImage;
+@property UIImageView *rightImage;
 @property UIImage *imageBeingDrawn;
 @property AVCaptureSession *session;
 @property CLLocationManager *loc_manager;
@@ -24,6 +24,8 @@
 @property CLHeading *currHeading;
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+
+@property (nonatomic, strong) UIBezierPath *currentLine;
 
 @end
 
@@ -39,7 +41,7 @@ static const double allowedDist = 0.03;
     self.leftScreen.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     self.leftImage = [[UIImageView alloc] init];
     [self.view addSubview:self.leftScreen];
-    self.rightScreen = [[UIView alloc] init];
+    self.rightScreen = [[UIImageView alloc] init];
     self.rightScreen.frame = CGRectMake(self.view.frame.size.width/2, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     self.rightImage = [[UIImageView alloc] init];
     [self.view addSubview:self.rightScreen];
@@ -64,6 +66,12 @@ static const double allowedDist = 0.03;
     
     AppDelegate *AD = [UIApplication sharedApplication].delegate;
     self.managedObjectContext = AD.managedObjectContext;
+    
+    // ** TESTING RENDER CURRENT IMAGE **//
+    [self renderCurrentLine:CGPointMake(0, 0) withBool:TRUE];
+    [self renderCurrentLine:CGPointMake(40, 0) withBool:TRUE];
+    [self renderCurrentLine:CGPointMake(40, 40) withBool:TRUE];
+    [self renderCurrentLine:CGPointMake(0, 40) withBool:FALSE];
 }
 
 -(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
@@ -97,13 +105,10 @@ static const double allowedDist = 0.03;
     CGColorSpaceRelease(colorSpace);
     UIImage *newImage = [UIImage imageWithCGImage:quartzImage];
     CFRelease(quartzImage);
-
-    UIGraphicsBeginImageContext(CGSizeMake(self.view.frame.size.width/2, self.view.frame.size.height));
-    [newImage drawInRect:CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height)];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
     
-    
+    // IF YOU WANT TO CHANGE ZOOM, CHANGE THIS RATIO
+    double ratio = self.leftImage.frame.size.width/(newImage.size.width/6);
+    UIImage *image = [UIImage imageWithCGImage:newImage.CGImage scale:ratio orientation:UIImageOrientationUp];
 
     if (image){
         [self.leftImage removeFromSuperview];
@@ -112,8 +117,12 @@ static const double allowedDist = 0.03;
         self.leftImage.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
         self.rightImage = [[UIImageView alloc] initWithImage:image];
         self.rightImage.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
-        [self.leftScreen addSubview:self.leftImage];
-        [self.rightScreen addSubview:self.rightImage];
+        if (self.currentLine){
+            [self addCurrentLine];
+        } else {
+            [self.leftScreen addSubview:self.leftImage];
+            [self.rightScreen addSubview:self.rightImage];
+        }
     }
     NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
 //    NSLog(@"%f", self.currHeading.trueHeading);
@@ -126,6 +135,14 @@ static const double allowedDist = 0.03;
 //                                                  picLat:image.latitude.doubleValue picLong:image.longitude.doubleValue];
 //        if (image.orientation )
 //    };
+    
+    
+//    NSArray *nearImages = [self ] //get images
+//    CLLocationCoordinate2D currLocation = [self getCoordinates];
+//    
+//    for (UIImage *image in nearImages) {
+//        if (image.orientation)
+//    }
 
 }
 
@@ -204,6 +221,78 @@ static const double allowedDist = 0.03;
 
 - (double) getDistanceFromLoc: (double)currLat longitude:(double)currLong picLat:(double)picLat picLong:(double)picLong {
     return sqrt(pow((currLat - picLat), 2) + pow((currLong + picLong), 2.0));
+}
+
+#pragma mark - Rendering Current Drawing
+- (void) renderCurrentLine:(CGPoint) coordinate withBool:(BOOL) drawing{
+    // Andrew, Ashley, call this function when you want to update the screen image
+    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);;
+    UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
+    [self.leftImage.image drawAtPoint:CGPointZero];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (drawing){
+        if (!self.currentLine){
+            self.currentLine = [UIBezierPath bezierPath];
+            [self.currentLine moveToPoint:CGPointMake(rect.size.width/2, rect.size.height/2)];
+        } else {
+            [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,
+                                                         coordinate.y + rect.size.height/2)];
+        }
+        [self.currentLine setLineWidth:3.0];
+        [self.currentLine setLineJoinStyle:kCGLineJoinBevel];
+        [[UIColor redColor] setStroke];
+        [self.currentLine stroke];
+//        [self.currentLine fill];
+        CGContextAddPath(context,self.currentLine.CGPath);
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        [self.leftImage removeFromSuperview];
+        self.leftImage =[[UIImageView alloc] initWithImage:image];
+        [self.leftScreen addSubview:self.leftImage];
+        [self.rightImage removeFromSuperview];
+        self.rightImage = [[UIImageView alloc] initWithImage:image];
+        [self.rightScreen addSubview:self.rightImage];
+        UIGraphicsEndImageContext();
+    } else {
+        [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,
+                                                     coordinate.y + rect.size.height/2)];
+        [self.currentLine setLineWidth:3.0];
+        [self.currentLine setLineJoinStyle:kCGLineJoinBevel];
+        [[UIColor redColor] setStroke];
+        [self.currentLine stroke];
+        CGContextAddPath(context,self.currentLine.CGPath);
+        [[UIColor redColor] setStroke];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        [self.leftImage removeFromSuperview];
+        self.leftImage =[[UIImageView alloc] initWithImage:image];
+        [self.leftScreen addSubview:self.leftImage];
+        [self.rightImage removeFromSuperview];
+        self.rightImage = [[UIImageView alloc] initWithImage:image];
+        [self.rightScreen addSubview:self.rightImage];
+        UIGraphicsEndImageContext();
+        
+//        self.currentLine = nil;
+        CLLocationCoordinate2D loc = self.currLocation.coordinate;
+        [self saveImage:image withLong:loc.longitude withLat:loc.latitude withOrient:self.currHeading.trueHeading];
+    }
+    
+}
+
+- (void)addCurrentLine{
+    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);;
+    UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
+    [self.leftImage.image drawAtPoint:CGPointZero];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [[UIColor redColor] setStroke];
+    [self.currentLine stroke];
+    CGContextAddPath(context,self.currentLine.CGPath);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    self.leftImage =[[UIImageView alloc] initWithImage:image];
+    [self.leftScreen addSubview:self.leftImage];
+    self.rightImage = [[UIImageView alloc] initWithImage:image];
+    [self.rightScreen addSubview:self.rightImage];
+    //        UIGraphicsPopContext();
+    UIGraphicsEndImageContext();
+
 }
 
 
