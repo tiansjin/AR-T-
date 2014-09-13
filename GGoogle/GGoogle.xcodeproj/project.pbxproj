@@ -7,15 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-<<<<<<< HEAD
 		1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */; };
-=======
-		1CA809D119C41F8500367FF8 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA809D019C41F8500367FF8 /* libsqlite3.dylib */; };
-		1CA809D319C429BA00367FF8 /* GGoogle.db in Resources */ = {isa = PBXBuildFile; fileRef = 1CA809D219C429BA00367FF8 /* GGoogle.db */; };
-		1CA809D519C42A2600367FF8 /* GGoogleDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA809D419C42A2600367FF8 /* GGoogleDatabase.m */; };
 		9495AD9419C4B6EC008FF974 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9495AD9219C4B6EC008FF974 /* Model.xcdatamodeld */; };
 		9495AD9719C4B72D008FF974 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = 9495AD9619C4B72D008FF974 /* Image.m */; };
->>>>>>> coredata stuff
 		94AFCC9119C3FA800026F02B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9019C3FA800026F02B /* main.m */; };
 		94AFCC9419C3FA800026F02B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9319C3FA800026F02B /* AppDelegate.m */; };
 		94AFCC9719C3FA800026F02B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCC9619C3FA800026F02B /* ViewController.m */; };
@@ -37,17 +31,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-<<<<<<< HEAD
 		1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-=======
-		1CA809D019C41F8500367FF8 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		1CA809D219C429BA00367FF8 /* GGoogle.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = GGoogle.db; path = ../GGoogle.db; sourceTree = "<group>"; };
-		1CA809D419C42A2600367FF8 /* GGoogleDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGoogleDatabase.m; sourceTree = "<group>"; };
-		1CA809D619C42CA300367FF8 /* GGoogleDatabase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GGoogleDatabase.h; sourceTree = "<group>"; };
 		9495AD9319C4B6EC008FF974 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		9495AD9519C4B72D008FF974 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 		9495AD9619C4B72D008FF974 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Image.m; sourceTree = "<group>"; };
->>>>>>> coredata stuff
 		94AFCC8B19C3FA800026F02B /* GGoogle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GGoogle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94AFCC8F19C3FA800026F02B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		94AFCC9019C3FA800026F02B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -69,12 +56,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< HEAD
 				1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */,
-=======
 				94F3F43A19C4B68000DA5850 /* CoreData.framework in Frameworks */,
-				1CA809D119C41F8500367FF8 /* libsqlite3.dylib in Frameworks */,
->>>>>>> coredata stuff
 				94AFCCB219C3FAF30026F02B /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,13 +75,8 @@
 		94AFCC8219C3FA800026F02B = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */,
-=======
 				94F3F43919C4B68000DA5850 /* CoreData.framework */,
-				1CA809D219C429BA00367FF8 /* GGoogle.db */,
-				1CA809D019C41F8500367FF8 /* libsqlite3.dylib */,
->>>>>>> coredata stuff
 				94AFCCB119C3FAF30026F02B /* AVFoundation.framework */,
 				94AFCC8D19C3FA800026F02B /* GGoogle */,
 				94AFCCA419C3FA810026F02B /* GGoogleTests */,
