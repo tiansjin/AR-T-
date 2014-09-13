@@ -10,6 +10,9 @@
 
 @interface ViewController ()
 
+@property UIView *leftScreen;
+@property UIView *rightScreen;
+
 @end
 
 @implementation ViewController

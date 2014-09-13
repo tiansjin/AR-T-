@@ -13,6 +13,7 @@
 		94AFCC9A19C3FA800026F02B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94AFCC9819C3FA800026F02B /* Main.storyboard */; };
 		94AFCC9C19C3FA800026F02B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94AFCC9B19C3FA800026F02B /* Images.xcassets */; };
 		94AFCCA819C3FA810026F02B /* GGoogleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCCA719C3FA810026F02B /* GGoogleTests.m */; };
+		94AFCCB219C3FAF30026F02B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94AFCCB119C3FAF30026F02B /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		94AFCCA119C3FA810026F02B /* GGoogleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GGoogleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		94AFCCA619C3FA810026F02B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		94AFCCA719C3FA810026F02B /* GGoogleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GGoogleTests.m; sourceTree = "<group>"; };
+		94AFCCB119C3FAF30026F02B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94AFCCB219C3FAF30026F02B /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +64,7 @@
 		94AFCC8219C3FA800026F02B = {
 			isa = PBXGroup;
 			children = (
+				94AFCCB119C3FAF30026F02B /* AVFoundation.framework */,
 				94AFCC8D19C3FA800026F02B /* GGoogle */,
 				94AFCCA419C3FA810026F02B /* GGoogleTests */,
 				94AFCC8C19C3FA800026F02B /* Products */,
