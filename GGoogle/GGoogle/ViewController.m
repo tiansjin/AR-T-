@@ -103,25 +103,12 @@ static const double allowedDist = 0.03;
     // Free up the context and color space
     CGContextRelease(context);
     CGColorSpaceRelease(colorSpace);
-    UIImage *image = [UIImage imageWithCGImage:quartzImage];
+    UIImage *newImage = [UIImage imageWithCGImage:quartzImage];
     CFRelease(quartzImage);
-
-//    UIGraphicsBeginImageContext(CGSizeMake(self.view.frame.size.width/2, self.view.frame.size.height));
-//    [newImage drawInRect:CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height)];
-//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
     
-//    CGSize size = CGSizeMake(self.leftScreen.frame.size.width, self.leftScreen.frame.size.height);
-//    double ratio = size.width/newImage.size.width;
-//    double delta = (ratio * newImage.size.width - ratio*newImage.size.height);
-//    CGPoint offset = CGPointMake(delta/2, 0);
-//    CGRect clipRect = CGRectMake(0, 0,
-//                                 (ratio*newImage.size.width)+delta,
-//                                 (ratio*newImage.size.height)+delta);
-//    UIGraphicsBeginImageContextWithOptions(size, YES, 0);
-//    [newImage drawInRect:clipRect];
-//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
+    // IF YOU WANT TO CHANGE ZOOM, CHANGE THIS RATIO
+    double ratio = self.leftImage.frame.size.width/(newImage.size.width/6);
+    UIImage *image = [UIImage imageWithCGImage:newImage.CGImage scale:ratio orientation:UIImageOrientationUp];
 
     if (image){
         [self.leftImage removeFromSuperview];
