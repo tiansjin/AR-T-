@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 #import <CoreLocation/CoreLocation.h>
+#import "Image.h"
+#import "AppDelegate.h"
 
 @interface ViewController ()
 
@@ -20,6 +22,8 @@
 @property CLLocationManager *loc_manager;
 @property CLLocation *location_data;
 @property CLHeading *currHeading;
+
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -54,6 +58,9 @@
     
     [self.session commitConfiguration];
     [self.session startRunning];
+    
+    AppDelegate *AD = [UIApplication sharedApplication].delegate;
+    self.managedObjectContext = AD.managedObjectContext;
 }
 
 -(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
@@ -134,6 +141,34 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
     self.currHeading = newHeading;
+}
+
+- (BOOL) saveImage:(UIImage *)image
+          withLong:(double)longi
+           withLat:(double)lat
+        withOrient:(double)orient{
+    Image *newImage = [NSEntityDescription insertNewObjectForEntityForName:@"Image"
+                                                    inManagedObjectContext:self.managedObjectContext];
+    newImage.image = UIImagePNGRepresentation(image);
+    newImage.longitude = [NSNumber numberWithDouble:longi];
+    newImage.latitude = [NSNumber numberWithDouble:lat];
+    newImage.orientation = [NSNumber numberWithDouble:orient];
+    NSError *error;
+    if (![self.managedObjectContext save:&error]) {
+        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
+        return FALSE;
+    }
+    return TRUE;
+}
+
+- (NSArray *) fetchImages:(NSPredicate *)predicate{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Image"
+                                              inManagedObjectContext:self.managedObjectContext];
+    [request setEntity:entity];
+    [request setPredicate:predicate];
+    NSArray *fetchedRecords = [self.managedObjectContext executeFetchRequest:request error:nil];
+    return fetchedRecords;
 }
 
 - (void)didReceiveMemoryWarning {
