@@ -167,6 +167,7 @@ const int YSCALE = 500;
             [self.currentLine stroke];
             CGContextAddPath(context,self.currentLine.CGPath);
             UIImage *image2 = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
             self.leftImage = [[UIImageView alloc] initWithImage:image2];
             self.leftImage.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
             self.rightImage = [[UIImageView alloc] initWithImage:image2];
@@ -296,10 +297,10 @@ const int YSCALE = 500;
     if (drawing){
         if (!self.currentLine){
             self.currentLine = [UIBezierPath bezierPath];
-            [self.currentLine moveToPoint:CGPointMake(rect.size.width/2, rect.size.height/2)];
+            [self.currentLine moveToPoint:CGPointMake(coordinate.x + rect.size.width/2,
+                                                                  coordinate.y + rect.size.height/2)];
         } else {
-            [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,
-                                                         coordinate.y + rect.size.height/2)];
+            [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,coordinate.y + rect.size.height/2)];
         }
     } else {
         UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
