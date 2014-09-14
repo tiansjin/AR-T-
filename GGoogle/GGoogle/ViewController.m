@@ -433,9 +433,14 @@ int VECTORSCALE = 1000;
         NSLog(@"we started drawing");
     }
     else {
-        isDrawing = false;
-        lastVector = true;
-        NSLog(@"we stopped drawing");
+        if (isDrawing) {
+            isDrawing = false;
+            lastVector = true;
+            NSLog(@"we stopped drawing");
+        } else {
+            NSLog(@"ignored pose change since we weren't drawing");
+        }
+        
     }
 }
 
@@ -454,7 +459,7 @@ int VECTORSCALE = 1000;
     if (isDrawing && firstVector) {
         firstVector = false;
         zAxis = currentVec;
-        [self renderCurrentLine:CGPointZero withBool:false];
+        [self renderCurrentLine:CGPointZero withBool:true];
         return;
     }
     
@@ -477,6 +482,7 @@ int VECTORSCALE = 1000;
     CGFloat ymagn = GLKVector3Length(yComp);
     if (lastVector) {
         lastVector = false;
+        NSLog(@"SAVING IMAGE");
         [self renderCurrentLine:CGPointMake((VECTORSCALE*xmagn), (VECTORSCALE*ymagn)) withBool:false];
         firstVector = true;
         secondVector = true;
