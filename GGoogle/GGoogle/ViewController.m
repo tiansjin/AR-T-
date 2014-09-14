@@ -33,12 +33,13 @@
 static const double allowedDist = 0.1;
 static const double defaultNormDist = 0.05;
 bool isDrawing = false;
-GLKVector3 xAxis;
-GLKVector3 zAxis;
-bool firstVector = true;
-bool secondVector = true;
-bool lastVector = false;
-int VECTORSCALE = 1000;
+
+// new vars, fix comments later
+TLMArmXDirection armXDirection;
+bool isLastVector = false;
+float initialYaw = -6; // min is -pi, so this marks it as unintialized
+const int XSCALE = 500;
+const int YSCALE = 500;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -398,6 +399,7 @@ int VECTORSCALE = 1000;
 - (void)didRecognizeArm:(NSNotification *)notification {
     // Retrieve the arm event from the notification's userInfo with the kTLMKeyArmRecognizedEvent key.
     TLMArmRecognizedEvent *armEvent = notification.userInfo[kTLMKeyArmRecognizedEvent];
+    armXDirection = armEvent.xDirection;
     NSLog(@"recognized arm");
 }
 
@@ -410,62 +412,62 @@ int VECTORSCALE = 1000;
     else {
         if (isDrawing) {
             isDrawing = false;
-            lastVector = true;
+            isLastVector = true;
             NSLog(@"we stopped drawing");
         } else {
             NSLog(@"ignored pose change since we weren't drawing");
         }
-        
     }
 }
 
 - (void)didReceiveOrientationEvent:(NSNotification*)notification {
     // if not drawing and not last one, throw notification away
-    if (!isDrawing && !lastVector) {
+    if (!isDrawing && !isLastVector) {
         return;
     }
     
-    // extract vector from orientation
+    // extract pitch and yaw from quaternion
     TLMOrientationEvent *orientation = notification.userInfo[kTLMKeyOrientationEvent];
     GLKQuaternion quaternion = orientation.quaternion;
-    GLKVector3 currentVec = GLKQuaternionAxis(quaternion);
+    float pitch = asin(2.0f * (quaternion.q[3] * quaternion.q[1] - quaternion.q[2] * quaternion.q[0]));
+    float yaw = atan2(2.0f * (quaternion.q[3] * quaternion.q[2] + quaternion.q[0] * quaternion.q[1]),
+                      1.0f - 2.0f * (quaternion.q[1] * quaternion.q[1] + quaternion.q[2] * quaternion.q[2]));
     
-    // if calibrating, get zaxis vector and send origin
-    if (isDrawing && firstVector) {
-        firstVector = false;
-        zAxis = currentVec;
-        [self renderCurrentLine:CGPointZero withBool:true];
-        return;
+    // get y value
+    NSLog(@"sample pitch value: %f", pitch);
+    float ymag = YSCALE*tan(pitch);
+    if (armXDirection == TLMArmXDirectionTowardElbow) {
+        pitch *= -1; // might not be necessary, suspect this for bugs
     }
     
-    // extract vector in xy plane by orthogonal projection
-    GLKVector3 xyVector = GLKVector3Subtract(currentVec, GLKVector3Project(currentVec, zAxis));
-    
-    // HACK: if it's the second vector, pretend that it's the xaxis
-    if (isDrawing && secondVector) {
-        secondVector = false;
-        xAxis = xyVector;
-        CGFloat magn = GLKVector3Length(xyVector);
-        [self renderCurrentLine:CGPointMake((CGFloat)(VECTORSCALE*magn), (CGFloat)0) withBool:true];
+    // get x value
+    NSLog(@"sample yaw value: %f", yaw);
+    if (initialYaw < -5) { // check for invalidity
+        initialYaw = yaw;
+        [self renderCurrentLine:CGPointMake((CGFloat)0, (CGFloat)ymag) withBool:YES];
         return;
     }
-    
-    // hackily extract components in pretend xy plane by projecting onto pretend xaxis
-    GLKVector3 xComp = GLKVector3Project(xyVector, xAxis);
-    CGFloat xmagn = GLKVector3Length(xComp);
-    GLKVector3 yComp = GLKVector3Subtract(xyVector, xComp);
-    CGFloat ymagn = GLKVector3Length(yComp);
-    if (lastVector) {
-        lastVector = false;
-        NSLog(@"SAVING IMAGE");
-        [self renderCurrentLine:CGPointMake((VECTORSCALE*xmagn), (VECTORSCALE*ymagn)) withBool:false];
-        firstVector = true;
-        secondVector = true;
-        return;
+    float angle1 = fabsf(yaw - initialYaw);
+    float angle2 = fabsf(initialYaw - yaw);
+    float xmag;
+    if (angle1 < (M_PI/2) && angle1 < angle2) {
+        xmag = XSCALE*tan(yaw - initialYaw);
+    } else if (angle2 < (M_PI/2) && angle2 < angle1) {
+        xmag = XSCALE*tan(initialYaw - yaw);
+    } else {
+        return; // outside our 180 degree arc, who cares?
     }
-    [self renderCurrentLine:CGPointMake((VECTORSCALE*xmagn), (VECTORSCALE*ymagn)) withBool:true];
+    
+    // check for special case of last vector
+    if (isLastVector) {
+        // reset values
+        isLastVector = NO;
+        initialYaw = -6; // again, just to be invalid HACK HACK HACK
+        [self renderCurrentLine:CGPointMake((CGFloat)xmag, (CGFloat)ymag) withBool:NO];
+    } else {
+        [self renderCurrentLine:CGPointMake((CGFloat)xmag, (CGFloat)ymag) withBool:YES];
+    }
     return;
 }
-
 
 @end
