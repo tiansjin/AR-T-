@@ -425,7 +425,6 @@ const int YSCALE = 500;
     if (!isDrawing && !isLastVector) {
         return;
     }
-    
     // extract pitch and yaw from quaternion
     TLMOrientationEvent *orientation = notification.userInfo[kTLMKeyOrientationEvent];
     GLKQuaternion quaternion = orientation.quaternion;
@@ -434,38 +433,28 @@ const int YSCALE = 500;
                       1.0f - 2.0f * (quaternion.q[1] * quaternion.q[1] + quaternion.q[2] * quaternion.q[2]));
     
     // get y value
-    NSLog(@"sample pitch value: %f", pitch);
-    float ymag = YSCALE*tan(pitch);
     if (armXDirection == TLMArmXDirectionTowardElbow) {
         pitch *= -1; // might not be necessary, suspect this for bugs
     }
+    double ymag = YSCALE*tan(pitch);
     
     // get x value
-    NSLog(@"sample yaw value: %f", yaw);
     if (initialYaw < -5) { // check for invalidity
         initialYaw = yaw;
-        [self renderCurrentLine:CGPointMake((CGFloat)0, (CGFloat)ymag) withBool:YES];
+        [self renderCurrentLine:CGPointMake((CGFloat)0, (CGFloat)ymag) withBool:true];
         return;
     }
-    float angle1 = fabsf(yaw - initialYaw);
-    float angle2 = fabsf(initialYaw - yaw);
-    float xmag;
-    if (angle1 < (M_PI/2) && angle1 < angle2) {
-        xmag = XSCALE*tan(yaw - initialYaw);
-    } else if (angle2 < (M_PI/2) && angle2 < angle1) {
-        xmag = XSCALE*tan(initialYaw - yaw);
-    } else {
-        return; // outside our 180 degree arc, who cares?
-    }
+    double delta = yaw - initialYaw;
+    double xmag = XSCALE*tan(delta);
     
     // check for special case of last vector
     if (isLastVector) {
         // reset values
-        isLastVector = NO;
+        isLastVector = false;
         initialYaw = -6; // again, just to be invalid HACK HACK HACK
-        [self renderCurrentLine:CGPointMake((CGFloat)xmag, (CGFloat)ymag) withBool:NO];
+        [self renderCurrentLine:CGPointMake((CGFloat)(float)xmag, (CGFloat)(float)ymag) withBool:false];
     } else {
-        [self renderCurrentLine:CGPointMake((CGFloat)xmag, (CGFloat)ymag) withBool:YES];
+        [self renderCurrentLine:CGPointMake((CGFloat)(float)xmag, (CGFloat)(float)ymag) withBool:true];
     }
     return;
 }
