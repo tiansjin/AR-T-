@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "Image.h"
 #import "AppDelegate.h"
+#import <GLKit/GLKMath.h>
 
 @interface ViewController ()
 
@@ -31,6 +32,11 @@
 
 static const double allowedDist = 0.03;
 bool isDrawing = false;
+GLKVector3 xAxis;
+GLKVector3 zAxis;
+bool firstVector = true;
+bool secondVector = true;
+bool lastVector = false;
             
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -362,15 +368,56 @@ bool isDrawing = false;
     }
     else {
         isDrawing = false;
+        lastVector = true;
         NSLog(@"we stopped drawing");
     }
 }
 
 - (void)didReceiveOrientationEvent:(NSNotification*)notification {
-    TLMOrientationEvent *orientation = notification.userInfo[kTLMKeyOrientationEvent];
-    if (isDrawing) {
-        // do something if it's drawing
+    // if not drawing and not last one, throw notification away
+    if (!isDrawing && !lastVector) {
+        return;
     }
+    
+    // extract vector from orientation
+    TLMOrientationEvent *orientation = notification.userInfo[kTLMKeyOrientationEvent];
+    GLKQuaternion quaternion = orientation.quaternion;
+    GLKVector3 currentVec = GLKQuaternionAxis(quaternion);
+    
+    // if calibrating, get zaxis vector and send origin
+    if (isDrawing && firstVector) {
+        firstVector = false;
+        zAxis = currentVec;
+        [self renderCurrentLine:CGPointZero withBool:false];
+        return;
+    }
+    
+    // extract vector in xy plane by orthogonal projection
+    GLKVector3 xyVector = GLKVector3Subtract(currentVec, GLKVector3Project(currentVec, zAxis));
+    
+    // HACK: if it's the second vector, pretend that it's the xaxis
+    if (isDrawing && secondVector) {
+        secondVector = false;
+        xAxis = xyVector;
+        CGFloat magn = GLKVector3Length(xyVector);
+        [self renderCurrentLine:CGPointMake((CGFloat)magn, (CGFloat)0) withBool:true];
+        return;
+    }
+    
+    // hackily extract components in pretend xy plane by projecting onto pretend xaxis
+    GLKVector3 xComp = GLKVector3Project(xyVector, xAxis);
+    CGFloat xmagn = GLKVector3Length(xComp);
+    GLKVector3 yComp = GLKVector3Subtract(xyVector, xComp);
+    CGFloat ymagn = GLKVector3Length(yComp);
+    if (lastVector) {
+        lastVector = false;
+        [self renderCurrentLine:CGPointMake(xmagn, ymagn) withBool:false];
+        firstVector = true;
+        secondVector = true;
+        return;
+    }
+    [self renderCurrentLine:CGPointMake(xmagn, ymagn) withBool:true];
+    return;
 }
 
 

@@ -21,6 +21,7 @@
 		94AFCCA819C3FA810026F02B /* GGoogleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AFCCA719C3FA810026F02B /* GGoogleTests.m */; };
 		94AFCCB219C3FAF30026F02B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94AFCCB119C3FAF30026F02B /* AVFoundation.framework */; };
 		94F3F43A19C4B68000DA5850 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F3F43919C4B68000DA5850 /* CoreData.framework */; };
+		FE24D55F19C52AB70035A415 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE24D55E19C52AB70035A415 /* GLKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		94AFCCA719C3FA810026F02B /* GGoogleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GGoogleTests.m; sourceTree = "<group>"; };
 		94AFCCB119C3FAF30026F02B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		94F3F43919C4B68000DA5850 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		FE24D55E19C52AB70035A415 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE24D55F19C52AB70035A415 /* GLKit.framework in Frameworks */,
 				61B4D3AD19C4E0EA007D38B5 /* MyoKit.framework in Frameworks */,
 				61B4D3AB19C4DF5D007D38B5 /* SystemConfiguration.framework in Frameworks */,
 				61B4D3A919C4DF3E007D38B5 /* CoreBluetooth.framework in Frameworks */,
@@ -84,6 +87,7 @@
 		94AFCC8219C3FA800026F02B = {
 			isa = PBXGroup;
 			children = (
+				FE24D55E19C52AB70035A415 /* GLKit.framework */,
 				61B4D3AC19C4E0EA007D38B5 /* MyoKit.framework */,
 				61B4D3AA19C4DF5D007D38B5 /* SystemConfiguration.framework */,
 				61B4D3A819C4DF3E007D38B5 /* CoreBluetooth.framework */,
