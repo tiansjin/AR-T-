@@ -26,6 +26,10 @@
 
 @property (nonatomic, strong) UIBezierPath *currentLine;
 
+@property (nonatomic, strong) NSMutableArray *imageArray;
+@property (nonatomic, strong) NSMutableArray *layerArray;
+
+
 @end
 
 @implementation ViewController
@@ -111,6 +115,8 @@ int VECTORSCALE = 1000;
     [self.loc_manager startUpdatingLocation];
     [self.loc_manager startUpdatingHeading];
     
+    self.imageArray = [[NSMutableArray alloc] initWithArray:@[[UIImage imageNamed:@"testing.png"], [UIImage imageNamed:@"minion.png"]]];
+    self.layerArray = [[NSMutableArray alloc] initWithArray:@[[[CALayer alloc] init], [[CALayer alloc] init], [[CALayer alloc] init], [[CALayer alloc] init]]];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
@@ -118,6 +124,7 @@ int VECTORSCALE = 1000;
 }
 
 -(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
+    [self renderImagesNearBy];
     
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     // Lock the base address of the pixel buffer
@@ -179,7 +186,6 @@ int VECTORSCALE = 1000;
             self.rightImage.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
         }
         if (false){
-            [self renderImagesNearBy];
         } else {
             [self.leftScreen addSubview:self.leftImage];
             [self.rightScreen addSubview:self.rightImage];
@@ -189,6 +195,7 @@ int VECTORSCALE = 1000;
 }
 
 - (void) renderImagesNearBy {
+    
 //    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
 //    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
 //                                   constraints[0], constraints[2], constraints[3], constraints[1]];
@@ -197,29 +204,50 @@ int VECTORSCALE = 1000;
 //        double distanceToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude
 //                                                 picLat:image.latitude.doubleValue picLong:image.longitude.doubleValue];
 //    }
-    CALayer *layer = [CALayer layer];
-    UIImage *rectangle = [UIImage imageNamed:@"rectangle.png"];
-    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
-    double distToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude picLat:39.952331 picLong:-75.190505];
-    CGSize resizeDimensions = [self getDimensionToScale:distToImg imgWidth:rectangle.size.width imgHeight:rectangle.size.height];
-    CABasicAnimation *resizeAnimation = [self createResizeAnimation:resizeDimensions];
-    resizeAnimation.duration = 0;
+//    CALayer *layer = [CALayer layer];
 
-    UIImageView *rectangleView = [[UIImageView alloc] initWithImage:rectangle];
-    layer = rectangleView.layer;
+//    UIImage *rectangle = [UIImage imageNamed:@"testing.png"];
+    int i = 0;
+    int degree_count = 0;
+    for (UIImage *image in self.imageArray) {
+        CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+        UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
+        CGPoint rectangleAnchor;
+        if (-20 < 180 * degree_count - (self.currHeading.trueHeading + 100) < 20) {
+            rectangleAnchor.x = (((180 * degree_count - (self.currHeading.trueHeading + 100)) + 20) / 40) * self.view.frame.size.width/2;
+        } else {
+            rectangleAnchor.x = -500;
+        }
+        rectangleAnchor.y = self.view.frame.size.height/2 - image.size.height/2;
+        float angle = -(180*degree_count - (self.currHeading.trueHeading + 100));
+        [self rotateImage:image rotationAngle: angle placeAt:rectangleAnchor atIndex:i];
+        i += 2;
+        degree_count += 1;
+    }
+    
+//    double distToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude picLat:39.952331 picLong:-75.190505];
+//    CGSize resizeDimensions = [self getDimensionToScale:distToImg imgWidth:rectangle.size.width imgHeight:rectangle.size.height];
+//    CABasicAnimation *resizeAnimation = [self createResizeAnimation:resizeDimensions];
+//    resizeAnimation.duration = 0;
+
+//    UIImageView *rectangleView = [[UIImageView alloc] initWithImage:rectangle];
+//    layer = rectangleView.layer;
 //    [self resize:rectangleView to:resizeDimensions withDuration:0 andSnapBack:false];
-    UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
-    [self.leftImage.image drawAtPoint:CGPointZero];
+    
+//    [self.leftImage.image drawAtPoint:CGPointZero];
+//    [rectangle drawAtPoint:CGPointZero];
 //    [layer renderInContext:UIGraphicsGetCurrentContext()];
-    float angle = -(270.0f - (self.currHeading.trueHeading + 100));
-    [self rotateImage:rectangle rotationAngle: angle];
-    [rectangle drawAtPoint:CGPointZero];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    
+//    rectangleAnchor.x = 270 - (self.currHeading.trueHeading + 100) + (self.view.frame.size.width/4 - rect.size.width/2);
+//    NSLog(@"%f", 270 - (self.currHeading.trueHeading + 100) + (self.view.frame.size.width/4 - rect.size.width/2));
+    
+//    [rectangle drawAtPoint:CGPointZero];
+//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
 
-    self.leftImage =[[UIImageView alloc] initWithImage:image];
-    [self.leftScreen addSubview:self.leftImage];
-    self.rightImage = [[UIImageView alloc] initWithImage:image];
-    [self.rightScreen addSubview:self.rightImage];
+//    self.leftImage =[[UIImageView alloc] initWithImage:image];
+//    [self.leftScreen addSubview:self.leftImage];
+//    self.rightImage = [[UIImageView alloc] initWithImage:image];
+//    [self.rightScreen addSubview:self.rightImage];
     UIGraphicsEndImageContext();
 }
 
@@ -319,9 +347,6 @@ int VECTORSCALE = 1000;
 }
 
 - (double) getDistanceFromLoc: (double)currLat longitude:(double)currLong picLat:(double)picLat picLong:(double)picLong {
-//    NSLog(@"------");
-//    NSLog(@"%f", (currLat - picLat));
-//    NSLog(@"%f", (currLong + picLong));
     return sqrt(pow((currLat - picLat), 2) + pow((currLong - picLong), 2.0));
 }
 
@@ -359,19 +384,39 @@ int VECTORSCALE = 1000;
 }
 
 /* Takes an UIImage, rotates it, and returns the transposed version of the image */
-- (UIImage*)rotateImage:(UIImage*)img rotationAngle:(float)z  {
-    
+- (void)rotateImage:(UIImage*)img rotationAngle:(float)z placeAt:(CGPoint)position atIndex:(int)imgIndex {
     //Create the container
-    CALayer *container = [CALayer layer];
-    container.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
-    [self.view.layer addSublayer:container];
+    if (self.layerArray[imgIndex]){
+        [self.layerArray[imgIndex]removeFromSuperlayer];
+        [self.layerArray[imgIndex] setContents:nil];
+    }
+    if (self.layerArray[imgIndex+1]) {
+        [self.layerArray[imgIndex+1]removeFromSuperlayer];
+        [self.layerArray[imgIndex+1] setContents:nil];
+    }
+    CALayer *container = [[CALayer alloc] init];
+    CALayer *container2 = [[CALayer alloc] init];
+    container.bounds = CGRectMake(0, 0, img.size.width, img.size.height);
+    container2.bounds = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+//    layer = container;
+//    layer2 = container2;
+    container.frame = CGRectMake(0, 0, img.size.width, img.size.height);
+    container2.frame = CGRectMake(self.view.frame.size.width/2, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     
     //Create a Plane
     CALayer *imagePlane =
     [self addPlaneToLayer:container
                     image: img
-                     size:CGSizeMake(self.view.frame.size.width/2, self.view.frame.size.height/2)
-                 position:CGPointMake(0, 0)
+                     size:img.size
+                 position:position
+                    color:[UIColor clearColor]];
+    
+    //Create a Plane
+    CALayer *imagePlane2 =
+    [self addPlaneToLayer:container2
+                    image: img
+                     size:img.size
+                 position:position
                     color:[UIColor clearColor]];
     
     // Apply the transform to the PLANE
@@ -380,11 +425,15 @@ int VECTORSCALE = 1000;
     // Perform the rotation around the z axis
     t = CATransform3DRotate(t, z * M_PI / 180.0f, 0, 1, 0);
     imagePlane.transform = t;
+    imagePlane2.transform = t;
+    
+    [self.layerArray replaceObjectAtIndex:imgIndex withObject:container];
+    [self.layerArray replaceObjectAtIndex:imgIndex+1 withObject:container2];
+    [self.view.layer addSublayer:container];
+    [self.view.layer addSublayer:container2];
     
     //Convert container back to image
-    UIImage* containedImage = [self imageFromLayer:container];
-    
-    return containedImage;
+//    UIImage* containedImage = [self imageFromLayer:container];
 }
 
 - (CALayer*)addPlaneToLayer:(CALayer*)container image:(UIImage*)img size:(CGSize)size position:(CGPoint)point color:(UIColor*)color{

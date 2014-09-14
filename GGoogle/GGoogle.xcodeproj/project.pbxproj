@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1C05F4D519C5250E005EE6EC /* rectangle.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C05F4D419C5250E005EE6EC /* rectangle.png */; };
+		1C05F4D719C56AD1005EE6EC /* testing.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C05F4D619C56AD1005EE6EC /* testing.png */; };
+		1C05F4D919C582DB005EE6EC /* mario.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C05F4D819C582DB005EE6EC /* mario.png */; };
+		1C05F4DB19C58428005EE6EC /* minion.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C05F4DA19C58428005EE6EC /* minion.png */; };
 		1CA809DD19C4ACC800367FF8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */; };
 		61B4D3A919C4DF3E007D38B5 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B4D3A819C4DF3E007D38B5 /* CoreBluetooth.framework */; };
 		61B4D3AB19C4DF5D007D38B5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B4D3AA19C4DF5D007D38B5 /* SystemConfiguration.framework */; };
@@ -37,6 +40,9 @@
 
 /* Begin PBXFileReference section */
 		1C05F4D419C5250E005EE6EC /* rectangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rectangle.png; sourceTree = "<group>"; };
+		1C05F4D619C56AD1005EE6EC /* testing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testing.png; sourceTree = "<group>"; };
+		1C05F4D819C582DB005EE6EC /* mario.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mario.png; sourceTree = "<group>"; };
+		1C05F4DA19C58428005EE6EC /* minion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = minion.png; sourceTree = "<group>"; };
 		1CA809DC19C4ACC800367FF8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		61B4D3A819C4DF3E007D38B5 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		61B4D3AA19C4DF5D007D38B5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -132,6 +138,9 @@
 			isa = PBXGroup;
 			children = (
 				1C05F4D419C5250E005EE6EC /* rectangle.png */,
+				1C05F4D819C582DB005EE6EC /* mario.png */,
+				1C05F4DA19C58428005EE6EC /* minion.png */,
+				1C05F4D619C56AD1005EE6EC /* testing.png */,
 				94AFCC8F19C3FA800026F02B /* Info.plist */,
 				94AFCC9019C3FA800026F02B /* main.m */,
 			);
@@ -235,9 +244,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C05F4D719C56AD1005EE6EC /* testing.png in Resources */,
 				1C05F4D519C5250E005EE6EC /* rectangle.png in Resources */,
+				1C05F4D919C582DB005EE6EC /* mario.png in Resources */,
 				94AFCC9A19C3FA800026F02B /* Main.storyboard in Resources */,
 				94AFCC9C19C3FA800026F02B /* Images.xcassets in Resources */,
+				1C05F4DB19C58428005EE6EC /* minion.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
