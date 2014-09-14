@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "Image.h"
 #import "AppDelegate.h"
+#import <GLKit/GLKMath.h>
 
 @interface ViewController ()
 
@@ -31,6 +32,8 @@
 
 static const double allowedDist = 0.03;
 bool isDrawing = false;
+GLKVector3 zAxis;
+GLKVector3 xAxis;
             
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -368,6 +371,8 @@ bool isDrawing = false;
 
 - (void)didReceiveOrientationEvent:(NSNotification*)notification {
     TLMOrientationEvent *orientation = notification.userInfo[kTLMKeyOrientationEvent];
+    GLKQuaternion quaternion = orientation.quaternion;
+    
     if (isDrawing) {
         // do something if it's drawing
     }
