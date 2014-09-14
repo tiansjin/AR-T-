@@ -14,9 +14,17 @@
 
 @implementation AppDelegate
 
+// Connecting to a Myo with attachToAdjacent
+//- (void)attachToAdjacentMyo {
+//    NSLog(@"trying to attach to myo");
+//    [[TLMHub sharedHub] attachToAdjacent];
+//}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [[TLMHub sharedHub] setApplicationIdentifier:@"com.example.aart"];
+    // Call attachToAdjacent to begin looking for Myos to pair with.
+    //[[TLMHub sharedHub] attachToAdjacent];
     return YES;
 }
 

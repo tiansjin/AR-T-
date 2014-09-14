@@ -31,10 +31,32 @@
 @implementation ViewController
 
 static const double allowedDist = 0.03;
+bool isDrawing = false;
             
 - (void)viewDidLoad {
     [super viewDidLoad];
 //     Do any additional setup after loading the view, typically from a nib.
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didConnectDevice:)
+                                                 name:TLMHubDidConnectDeviceNotification
+                                               object:nil];
+    
+    // Posted whenever the user does a Sync Gesture, and the Myo is calibrated
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didRecognizeArm:)
+                                                 name:TLMMyoDidReceiveArmRecognizedEventNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceivePoseChange:)
+                                                 name:TLMMyoDidReceivePoseChangedNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveOrientationEvent:)
+                                                 name:TLMMyoDidReceiveOrientationEventNotification
+                                               object:nil];
     
     self.leftScreen = [[UIView alloc] init];
     self.leftScreen.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
@@ -72,6 +94,8 @@ static const double allowedDist = 0.03;
     [self renderCurrentLine:CGPointMake(40, 40) withBool:TRUE];
     [self renderCurrentLine:CGPointMake(0, 40) withBool:FALSE];
     [self getCoordinates];
+
+    [[TLMHub sharedHub] attachToAny];
 }
 
 -(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
@@ -304,7 +328,35 @@ static const double allowedDist = 0.03;
     [self.rightScreen addSubview:self.rightImage];
     //        UIGraphicsPopContext();
     UIGraphicsEndImageContext();
+}
+    
+- (void)didConnectDevice:(NSNotification *)notification {
+    NSLog(@"connected device");
+}
 
+- (void)didRecognizeArm:(NSNotification *)notification {
+    // Retrieve the arm event from the notification's userInfo with the kTLMKeyArmRecognizedEvent key.
+    TLMArmRecognizedEvent *armEvent = notification.userInfo[kTLMKeyArmRecognizedEvent];
+    NSLog(@"recognized arm");
+}
+
+- (void)didReceivePoseChange:(NSNotification*)notification {
+    TLMPose *pose = notification.userInfo[kTLMKeyPose];
+    if (pose.type == TLMPoseTypeFist) {
+        isDrawing = true;
+        NSLog(@"we started drawing");
+    }
+    else {
+        isDrawing = false;
+        NSLog(@"we stopped drawing");
+    }
+}
+
+- (void)didReceiveOrientationEvent:(NSNotification*)notification {
+    TLMOrientationEvent *orientation = notification.userInfo[kTLMKeyOrientationEvent];
+    if (isDrawing) {
+        // do something if it's drawing
+    }
 }
 
 
