@@ -184,6 +184,9 @@ GLKVector3 xAxis;
 //    rectangleAnchor.x = 270 - (self.currHeading.trueHeading + 100) + (self.view.frame.size.width/4 - rect.size.width/2);
 //    NSLog(@"%f", 270 - (self.currHeading.trueHeading + 100) + (self.view.frame.size.width/4 - rect.size.width/2));
 //    rectangleAnchor.y = self.view.frame.size.height/2 - rect.size.height/2;
+    float angle = -(270.0f - (self.currHeading.trueHeading + 100));
+    NSLog(@"%f", angle);
+    [self rotateImage:rectangle rotationAngle: angle];
     [rectangle drawAtPoint:CGPointZero];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     self.leftImage =[[UIImageView alloc] initWithImage:image];
@@ -318,6 +321,59 @@ GLKVector3 xAxis;
         [self saveImage:image withLong:loc.longitude withLat:loc.latitude withOrient:self.currHeading.trueHeading];
     }
     
+}
+
+/* Takes an UIImage, rotates it, and returns the transposed version of the image */
+- (UIImage*)rotateImage:(UIImage*)img rotationAngle:(float)z  {
+    
+    //Create the container
+    CALayer *container = [CALayer layer];
+    container.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+    [self.view.layer addSublayer:container];
+    
+    //Create a Plane
+    CALayer *imagePlane =
+    [self addPlaneToLayer:container
+                    image: img
+                     size:CGSizeMake(self.view.frame.size.width/2, self.view.frame.size.height/2)
+                 position:CGPointMake(0, 0)
+                    color:[UIColor clearColor]];
+    
+    // Apply the transform to the PLANE
+    CATransform3D t = CATransform3DIdentity;
+    
+    // Perform the rotation around the z axis
+    t = CATransform3DRotate(t, z * M_PI / 180.0f, 0, 1, 0);
+    imagePlane.transform = t;
+    
+    //Convert container back to image
+    UIImage* containedImage = [self imageFromLayer:container];
+    
+    return containedImage;
+}
+
+- (CALayer*)addPlaneToLayer:(CALayer*)container image:(UIImage*)img size:(CGSize)size position:(CGPoint)point color:(UIColor*)color{
+    //Initialize the layer
+    CALayer *plane = [CALayer layer];
+    plane.contents = (id)img.CGImage; // Add image to the plane
+    plane.backgroundColor = [color CGColor];
+    plane.frame = CGRectMake(point.x, point.y, size.width, size.height);
+    //Add the layer to the container layer
+    [container addSublayer:plane];
+    
+    return plane;
+}
+
+- (UIImage *)imageFromLayer:(CALayer *)layer
+{
+    UIGraphicsBeginImageContext([layer frame].size);
+    
+    [layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return outputImage;
 }
 
 //- (void)addCurrentLine{
