@@ -30,7 +30,7 @@
 @implementation ViewController
 
 static const double allowedDist = 0.1;
-static const double defaultNormDist = 0.05;
+static const double defaultNormDist = 0.00002;
 bool isDrawing = false;
             
 - (void)viewDidLoad {
@@ -160,34 +160,67 @@ bool isDrawing = false;
             [self.rightScreen addSubview:self.rightImage];
         }
     }
-//    NSLog(@"%f, %f", )
+//    NSLog(@"%f, %f", self.currLocation.coordinate.latitude, self.currLocation.coordinate.longitude);
 }
 
 - (void) renderImagesNearBy {
-    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
-    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
-                                   constraints[0], constraints[2], constraints[3], constraints[1]];
-    NSArray *nearImages = [self fetchImages:queryPredicate]; //get images
+//    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
+//    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
+//                                   constraints[0], constraints[2], constraints[3], constraints[1]];
+//    NSArray *nearImages = [self fetchImages:queryPredicate]; //get images
 //    for (Image *image in nearImages) {
 //        double distanceToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude
 //                                                 picLat:image.latitude.doubleValue picLong:image.longitude.doubleValue];
 //    }
+    CALayer *layer = [CALayer layer];
     UIImage *rectangle = [UIImage imageNamed:@"rectangle.png"];
     CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+    double distToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude picLat:39.952331 picLong:-75.190505];
+    CGSize resizeDimensions = [self getDimensionToScale:distToImg imgWidth:rectangle.size.width imgHeight:rectangle.size.height];
+    CABasicAnimation *resizeAnimation = [self createResizeAnimation:resizeDimensions];
+    resizeAnimation.duration = 0;
+
+    UIImageView *rectangleView = [[UIImageView alloc] initWithImage:rectangle];
+    layer = rectangleView.layer;
+//    layer.contents = (__bridge id)([UIImage imageNamed:@"rectangle.png"].CGImage);
+//    [layer addAnimation:resizeAnimation forKey:@"resizingThing"];
+    [self resize:rectangleView to:resizeDimensions withDuration:0 andSnapBack:false];
     UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
-//    double distToImg = [self getDistanceFromLoc:this.currLocation.coordinate.latitude longitude:this.currLocation.coordinate.latitude picLat:<#(double)#> picLong:<#(double)#>
     [self.leftImage.image drawAtPoint:CGPointZero];
-//    CGPoint rectangleAnchor;
-//    rectangleAnchor.x = 270 - (self.currHeading.trueHeading + 100) + (self.view.frame.size.width/4 - rect.size.width/2);
-//    NSLog(@"%f", 270 - (self.currHeading.trueHeading + 100) + (self.view.frame.size.width/4 - rect.size.width/2));
-//    rectangleAnchor.y = self.view.frame.size.height/2 - rect.size.height/2;
-    [rectangle drawAtPoint:CGPointZero];
+    [layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+
     self.leftImage =[[UIImageView alloc] initWithImage:image];
     [self.leftScreen addSubview:self.leftImage];
     self.rightImage = [[UIImageView alloc] initWithImage:image];
     [self.rightScreen addSubview:self.rightImage];
     UIGraphicsEndImageContext();
+}
+
+- (UIImage *)imageFromLayer:(CALayer *)layer{
+//    UIGraphicsBeginImageContext([layer frame].size);
+    [layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+    return outputImage;
+}
+
+- (void)resize:(UIView*)view to:(CGSize)size withDuration:(int) duration andSnapBack:(BOOL) snapBack
+{
+    // Prepare the animation from the old size to the new size
+    CGRect oldBounds = view.layer.bounds;
+    CGRect newBounds = oldBounds;
+    newBounds.size = size;
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"bounds"];
+    // iOS
+    animation.fromValue = [NSValue valueWithCGRect:oldBounds];
+    animation.toValue = [NSValue valueWithCGRect:newBounds];
+    if(!snapBack) {
+        // Update the layer’s bounds so the layer doesn’t snap back when the animation completes.
+        view.layer.bounds = newBounds;
+    }
+    // Add the animation, overriding the implicit animation.
+    [view.layer addAnimation:animation forKey:@"bounds"];
 }
 
 - (CABasicAnimation *) createResizeAnimation:(CGSize)newDimensions {
@@ -200,6 +233,8 @@ bool isDrawing = false;
 
 - (CGSize) getDimensionToScale:(double)distanceToImg imgWidth:(double)width imgHeight:(double)height {
     double ratio = defaultNormDist / (distanceToImg);
+//    NSLog(@"%f, %f", ratio, distanceToImg);
+//    NSLog(@"%f, %f", width * ratio, height * ratio);
     return CGSizeMake(width * ratio, height * ratio);
 }
 
@@ -258,7 +293,10 @@ bool isDrawing = false;
 }
 
 - (double) getDistanceFromLoc: (double)currLat longitude:(double)currLong picLat:(double)picLat picLong:(double)picLong {
-    return sqrt(pow((currLat - picLat), 2) + pow((currLong + picLong), 2.0));
+//    NSLog(@"------");
+//    NSLog(@"%f", (currLat - picLat));
+//    NSLog(@"%f", (currLong + picLong));
+    return sqrt(pow((currLat - picLat), 2) + pow((currLong - picLong), 2.0));
 }
 
 #pragma mark - Rendering Current Drawing
@@ -361,6 +399,7 @@ bool isDrawing = false;
     if (isDrawing) {
         // do something if it's drawing
     }
+    
 }
 
 
