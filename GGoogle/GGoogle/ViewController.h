@@ -13,6 +13,8 @@
 
 @interface ViewController : UIViewController <AVCaptureVideoDataOutputSampleBufferDelegate, CLLocationManagerDelegate>
 
+@property (nonatomic, strong) CLLocationManager *loc_manager;
+
 
 @end
 

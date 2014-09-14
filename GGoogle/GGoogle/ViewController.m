@@ -18,7 +18,6 @@
 @property UIImageView *rightImage;
 @property UIImage *imageBeingDrawn;
 @property AVCaptureSession *session;
-@property CLLocationManager *loc_manager;
 @property CLLocation *currLocation;
 @property CLHeading *currHeading;
 
@@ -35,7 +34,7 @@ bool isDrawing = false;
             
 - (void)viewDidLoad {
     [super viewDidLoad];
-//     Do any additional setup after loading the view, typically from a nib.
+     // Do any additional setup after loading the view, typically from a nib.
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didConnectDevice:)
@@ -93,9 +92,21 @@ bool isDrawing = false;
     [self renderCurrentLine:CGPointMake(40, 0) withBool:TRUE];
     [self renderCurrentLine:CGPointMake(40, 40) withBool:TRUE];
     [self renderCurrentLine:CGPointMake(0, 40) withBool:FALSE];
-    [self getCoordinates];
 
     [[TLMHub sharedHub] attachToAny];
+    
+    self.loc_manager = [[CLLocationManager alloc] init];
+    self.loc_manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
+    self.loc_manager.delegate = self;
+    [self.loc_manager requestAlwaysAuthorization];
+    self.loc_manager.distanceFilter = kCLDistanceFilterNone;
+    [self.loc_manager startUpdatingLocation];
+    [self.loc_manager startUpdatingHeading];
+    
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    NSLog(@"status changed");
 }
 
 -(void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
@@ -148,6 +159,9 @@ bool isDrawing = false;
             [self.rightScreen addSubview:self.rightImage];
         }
     }
+    
+    
+    
 //    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
 //    NSLog(@"%f", self.currHeading.trueHeading);
 //    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
@@ -170,22 +184,32 @@ bool isDrawing = false;
 
 }
 
-- (void) getCoordinates {
-    if (!self.loc_manager) {
-        self.loc_manager = [[CLLocationManager alloc] init];
-    }
-    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
-    self.loc_manager.delegate = self;
-    [self.loc_manager requestAlwaysAuthorization];
-    [self.loc_manager startUpdatingLocation];
-}
+//- (void) getCoordinates {
+//    self.loc_manager = [[CLLocationManager alloc] init];
+//    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
+//    self.loc_manager.delegate = self;
+//    [self.loc_manager requestAlwaysAuthorization];
+//    [self.loc_manager startUpdatingLocation];
+//    [self.loc_manager startUpdatingHeading];
+//}
+//
+//
+//- (void) startHeadingEvents {
+//    if (!self.loc_manager) {
+//        self.loc_manager = [[CLLocationManager alloc] init];
+//    }
+//    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
+//    if (self.loc_manager.headingAvailable) {
+//        [self.loc_manager startUpdatingHeading];
+//    }
+//}
 
 -(void)locationManager:(CLLocationManager *)manager
    didUpdateToLocation:(CLLocation *)newLocation
           fromLocation:(CLLocation *)oldLocation {
-    self.currLocation = newLocation;
+    //    self.currLocation = newLocation;
     NSLog(@"Got into here");
-    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
+    //    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
 }
 
 - (void) locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
@@ -195,16 +219,6 @@ bool isDrawing = false;
 - (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
     CLLocation *loc = locations[0];
     NSLog(@"%f,%f", loc.coordinate.latitude, loc.coordinate.longitude);
-}
-
-- (void) startHeadingEvents {
-    if (!self.loc_manager) {
-        self.loc_manager = [[CLLocationManager alloc] init];
-    }
-    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
-    if (self.loc_manager.headingAvailable) {
-        [self.loc_manager startUpdatingHeading];
-    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
