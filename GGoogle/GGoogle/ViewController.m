@@ -9,17 +9,18 @@
 #import "ViewController.h"
 #import "Image.h"
 #import "AppDelegate.h"
+#import <GLKit/GLKMath.h>
 
 @interface ViewController ()
 
-@property UIView *leftScreen;
-@property UIView *rightScreen;
-@property UIImageView *leftImage;
-@property UIImageView *rightImage;
-@property UIImage *imageBeingDrawn;
-@property AVCaptureSession *session;
-@property CLLocation *currLocation;
-@property CLHeading *currHeading;
+@property (nonatomic, strong) UIView *leftScreen;
+@property (nonatomic, strong) UIView *rightScreen;
+@property (nonatomic, strong) UIImageView *leftImage;
+@property (nonatomic, strong) UIImageView *rightImage;
+@property (nonatomic, strong) UIImage *imageBeingDrawn;
+@property (nonatomic, strong) AVCaptureSession *session;
+@property (nonatomic, strong) CLLocation *currLocation;
+@property (nonatomic, strong) CLHeading *currHeading;
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
@@ -32,7 +33,13 @@
 static const double allowedDist = 0.1;
 static const double defaultNormDist = 0.00002;
 bool isDrawing = false;
-            
+GLKVector3 xAxis;
+GLKVector3 zAxis;
+bool firstVector = true;
+bool secondVector = true;
+bool lastVector = false;
+int VECTORSCALE = 1000;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
      // Do any additional setup after loading the view, typically from a nib.
@@ -89,17 +96,17 @@ bool isDrawing = false;
     self.managedObjectContext = AD.managedObjectContext;
     
     // ** TESTING RENDER CURRENT IMAGE **//
-    [self renderCurrentLine:CGPointMake(0, 0) withBool:TRUE];
-    [self renderCurrentLine:CGPointMake(40, 0) withBool:TRUE];
-    [self renderCurrentLine:CGPointMake(40, 40) withBool:TRUE];
-    [self renderCurrentLine:CGPointMake(0, 40) withBool:FALSE];
+//    [self renderCurrentLine:CGPointMake(0, 0) withBool:TRUE];
+//    [self renderCurrentLine:CGPointMake(40, 0) withBool:TRUE];
+//    [self renderCurrentLine:CGPointMake(40, 40) withBool:TRUE];
+//    [self renderCurrentLine:CGPointMake(0, 40) withBool:FALSE];
 
     [[TLMHub sharedHub] attachToAny];
     
     self.loc_manager = [[CLLocationManager alloc] init];
     self.loc_manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
     self.loc_manager.delegate = self;
-    [self.loc_manager requestAlwaysAuthorization];
+//    [self.loc_manager requestAlwaysAuthorization];
     self.loc_manager.distanceFilter = kCLDistanceFilterNone;
     [self.loc_manager startUpdatingLocation];
     [self.loc_manager startUpdatingHeading];
@@ -145,15 +152,33 @@ bool isDrawing = false;
     // IF YOU WANT TO CHANGE ZOOM, CHANGE THIS RATIO
     double ratio = self.leftImage.frame.size.width/(newImage.size.width/6);
     UIImage *image = [UIImage imageWithCGImage:newImage.CGImage scale:ratio orientation:UIImageOrientationUp];
-
     if (image){
         [self.leftImage removeFromSuperview];
         [self.rightImage removeFromSuperview];
-        self.leftImage = [[UIImageView alloc] initWithImage:image];
-        self.leftImage.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
-        self.rightImage = [[UIImageView alloc] initWithImage:image];
-        self.rightImage.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
-        if (true){
+        CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+        UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
+        [image drawAtPoint:CGPointZero];
+        if (self.currentLine){
+            CGContextRef context = UIGraphicsGetCurrentContext();
+            [self.currentLine setLineWidth:2.0];
+            [self.currentLine setLineJoinStyle:kCGLineJoinBevel];
+            [[UIColor redColor] setStroke];
+            [self.currentLine stroke];
+            CGContextAddPath(context,self.currentLine.CGPath);
+            UIImage *image2 = UIGraphicsGetImageFromCurrentImageContext();
+            self.leftImage = [[UIImageView alloc] initWithImage:image2];
+            self.leftImage.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
+            self.rightImage = [[UIImageView alloc] initWithImage:image2];
+            self.rightImage.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+        } else {
+            image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            self.leftImage = [[UIImageView alloc] initWithImage:image];
+            self.leftImage.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
+            self.rightImage = [[UIImageView alloc] initWithImage:image];
+            self.rightImage.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+        }
+        if (false){
             [self renderImagesNearBy];
         } else {
             [self.leftScreen addSubview:self.leftImage];
@@ -182,12 +207,13 @@ bool isDrawing = false;
 
     UIImageView *rectangleView = [[UIImageView alloc] initWithImage:rectangle];
     layer = rectangleView.layer;
-//    layer.contents = (__bridge id)([UIImage imageNamed:@"rectangle.png"].CGImage);
-//    [layer addAnimation:resizeAnimation forKey:@"resizingThing"];
-    [self resize:rectangleView to:resizeDimensions withDuration:0 andSnapBack:false];
+//    [self resize:rectangleView to:resizeDimensions withDuration:0 andSnapBack:false];
     UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
     [self.leftImage.image drawAtPoint:CGPointZero];
-    [layer renderInContext:UIGraphicsGetCurrentContext()];
+//    [layer renderInContext:UIGraphicsGetCurrentContext()];
+    float angle = -(270.0f - (self.currHeading.trueHeading + 100));
+    [self rotateImage:rectangle rotationAngle: angle];
+    [rectangle drawAtPoint:CGPointZero];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
 
     self.leftImage =[[UIImageView alloc] initWithImage:image];
@@ -303,10 +329,7 @@ bool isDrawing = false;
 - (void) renderCurrentLine:(CGPoint) coordinate withBool:(BOOL) drawing{
     // Andrew, Ashley, call this function when you want to update the screen image
     CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
-    UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
     if (drawing){
-        [self.leftImage.image drawAtPoint:CGPointZero];
-        CGContextRef context = UIGraphicsGetCurrentContext();
         if (!self.currentLine){
             self.currentLine = [UIBezierPath bezierPath];
             [self.currentLine moveToPoint:CGPointMake(rect.size.width/2, rect.size.height/2)];
@@ -314,22 +337,8 @@ bool isDrawing = false;
             [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,
                                                          coordinate.y + rect.size.height/2)];
         }
-        [self.currentLine setLineWidth:3.0];
-        [self.currentLine setLineJoinStyle:kCGLineJoinBevel];
-        [[UIColor redColor] setStroke];
-        [self.currentLine stroke];
-//        [self.currentLine fill];
-        CGContextAddPath(context,self.currentLine.CGPath);
-        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-        [self.leftImage removeFromSuperview];
-        self.leftImage =[[UIImageView alloc] initWithImage:image];
-        [self.leftScreen addSubview:self.leftImage];
-        [self.rightImage removeFromSuperview];
-        self.rightImage = [[UIImageView alloc] initWithImage:image];
-        [self.rightScreen addSubview:self.rightImage];
-        UIGraphicsEndImageContext();
     } else {
-        
+        UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
         CGContextRef context = UIGraphicsGetCurrentContext();
         [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,
                                                      coordinate.y + rect.size.height/2)];
@@ -339,20 +348,55 @@ bool isDrawing = false;
         [self.currentLine stroke];
         CGContextAddPath(context,self.currentLine.CGPath);
         [[UIColor redColor] setStroke];
-        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-        [self.leftImage removeFromSuperview];
-        self.leftImage =[[UIImageView alloc] initWithImage:image];
-        [self.leftScreen addSubview:self.leftImage];
-        [self.rightImage removeFromSuperview];
-        self.rightImage = [[UIImageView alloc] initWithImage:image];
-        [self.rightScreen addSubview:self.rightImage];
+        UIImage *saveImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
         self.currentLine = nil;
         CLLocationCoordinate2D loc = self.currLocation.coordinate;
-        [self saveImage:image withLong:loc.longitude withLat:loc.latitude withOrient:self.currHeading.trueHeading];
+        [self saveImage:saveImage withLong:loc.longitude withLat:loc.latitude withOrient:self.currHeading.trueHeading];
     }
     
+}
+
+/* Takes an UIImage, rotates it, and returns the transposed version of the image */
+- (UIImage*)rotateImage:(UIImage*)img rotationAngle:(float)z  {
+    
+    //Create the container
+    CALayer *container = [CALayer layer];
+    container.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+    [self.view.layer addSublayer:container];
+    
+    //Create a Plane
+    CALayer *imagePlane =
+    [self addPlaneToLayer:container
+                    image: img
+                     size:CGSizeMake(self.view.frame.size.width/2, self.view.frame.size.height/2)
+                 position:CGPointMake(0, 0)
+                    color:[UIColor clearColor]];
+    
+    // Apply the transform to the PLANE
+    CATransform3D t = CATransform3DIdentity;
+    
+    // Perform the rotation around the z axis
+    t = CATransform3DRotate(t, z * M_PI / 180.0f, 0, 1, 0);
+    imagePlane.transform = t;
+    
+    //Convert container back to image
+    UIImage* containedImage = [self imageFromLayer:container];
+    
+    return containedImage;
+}
+
+- (CALayer*)addPlaneToLayer:(CALayer*)container image:(UIImage*)img size:(CGSize)size position:(CGPoint)point color:(UIColor*)color{
+    //Initialize the layer
+    CALayer *plane = [CALayer layer];
+    plane.contents = (id)img.CGImage; // Add image to the plane
+    plane.backgroundColor = [color CGColor];
+    plane.frame = CGRectMake(point.x, point.y, size.width, size.height);
+    //Add the layer to the container layer
+    [container addSublayer:plane];
+    
+    return plane;
 }
 
 //- (void)addCurrentLine{
@@ -390,16 +434,56 @@ bool isDrawing = false;
     }
     else {
         isDrawing = false;
+        lastVector = true;
         NSLog(@"we stopped drawing");
     }
 }
 
 - (void)didReceiveOrientationEvent:(NSNotification*)notification {
-    TLMOrientationEvent *orientation = notification.userInfo[kTLMKeyOrientationEvent];
-    if (isDrawing) {
-        // do something if it's drawing
+    // if not drawing and not last one, throw notification away
+    if (!isDrawing && !lastVector) {
+        return;
     }
     
+    // extract vector from orientation
+    TLMOrientationEvent *orientation = notification.userInfo[kTLMKeyOrientationEvent];
+    GLKQuaternion quaternion = orientation.quaternion;
+    GLKVector3 currentVec = GLKQuaternionAxis(quaternion);
+    
+    // if calibrating, get zaxis vector and send origin
+    if (isDrawing && firstVector) {
+        firstVector = false;
+        zAxis = currentVec;
+        [self renderCurrentLine:CGPointZero withBool:false];
+        return;
+    }
+    
+    // extract vector in xy plane by orthogonal projection
+    GLKVector3 xyVector = GLKVector3Subtract(currentVec, GLKVector3Project(currentVec, zAxis));
+    
+    // HACK: if it's the second vector, pretend that it's the xaxis
+    if (isDrawing && secondVector) {
+        secondVector = false;
+        xAxis = xyVector;
+        CGFloat magn = GLKVector3Length(xyVector);
+        [self renderCurrentLine:CGPointMake((CGFloat)(VECTORSCALE*magn), (CGFloat)0) withBool:true];
+        return;
+    }
+    
+    // hackily extract components in pretend xy plane by projecting onto pretend xaxis
+    GLKVector3 xComp = GLKVector3Project(xyVector, xAxis);
+    CGFloat xmagn = GLKVector3Length(xComp);
+    GLKVector3 yComp = GLKVector3Subtract(xyVector, xComp);
+    CGFloat ymagn = GLKVector3Length(yComp);
+    if (lastVector) {
+        lastVector = false;
+        [self renderCurrentLine:CGPointMake((VECTORSCALE*xmagn), (VECTORSCALE*ymagn)) withBool:false];
+        firstVector = true;
+        secondVector = true;
+        return;
+    }
+    [self renderCurrentLine:CGPointMake((VECTORSCALE*xmagn), (VECTORSCALE*ymagn)) withBool:true];
+    return;
 }
 
 
