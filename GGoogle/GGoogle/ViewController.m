@@ -30,7 +30,8 @@
 
 @implementation ViewController
 
-static const double allowedDist = 0.03;
+static const double allowedDist = 0.1;
+static const double defaultNormDist = 0.05;
 bool isDrawing = false;
 GLKVector3 zAxis;
 GLKVector3 xAxis;
@@ -155,73 +156,60 @@ GLKVector3 xAxis;
         self.leftImage.frame = CGRectMake(0,0,self.view.frame.size.width/2, self.view.frame.size.height);
         self.rightImage = [[UIImageView alloc] initWithImage:image];
         self.rightImage.frame = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
-        if (self.currentLine){
-            [self addCurrentLine];
+        if (true){
+            [self renderImagesNearBy];
         } else {
             [self.leftScreen addSubview:self.leftImage];
             [self.rightScreen addSubview:self.rightImage];
         }
     }
-    
-    
-    
-//    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
-//    NSLog(@"%f", self.currHeading.trueHeading);
-//    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
-//    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
-//                                   constraints[0], constraints[2], constraints[3], constraints[1]];
-//    NSArray *nearImages = [self fetchImages:queryPredicate]; //get images
+//    NSLog(@"%f, %f", )
+}
+
+- (void) renderImagesNearBy {
+    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
+    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
+                                   constraints[0], constraints[2], constraints[3], constraints[1]];
+    NSArray *nearImages = [self fetchImages:queryPredicate]; //get images
 //    for (Image *image in nearImages) {
 //        double distanceToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude
-//                                                  picLat:image.latitude.doubleValue picLong:image.longitude.doubleValue];
-//        if (image.orientation )
-//    };
-    
-    
-//    NSArray *nearImages = [self ] //get images
-//    CLLocationCoordinate2D currLocation = [self getCoordinates];
-//    
-//    for (UIImage *image in nearImages) {
-//        if (image.orientation)
+//                                                 picLat:image.latitude.doubleValue picLong:image.longitude.doubleValue];
 //    }
-
+    UIImage *rectangle = [UIImage imageNamed:@"rectangle.png"];
+    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+    UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
+//    double distToImg = [self getDistanceFromLoc:this.currLocation.coordinate.latitude longitude:this.currLocation.coordinate.latitude picLat:<#(double)#> picLong:<#(double)#>
+    [self.leftImage.image drawAtPoint:CGPointZero];
+//    CGPoint rectangleAnchor;
+//    rectangleAnchor.x = 270 - (self.currHeading.trueHeading + 100) + (self.view.frame.size.width/4 - rect.size.width/2);
+//    NSLog(@"%f", 270 - (self.currHeading.trueHeading + 100) + (self.view.frame.size.width/4 - rect.size.width/2));
+//    rectangleAnchor.y = self.view.frame.size.height/2 - rect.size.height/2;
+    [rectangle drawAtPoint:CGPointZero];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    self.leftImage =[[UIImageView alloc] initWithImage:image];
+    [self.leftScreen addSubview:self.leftImage];
+    self.rightImage = [[UIImageView alloc] initWithImage:image];
+    [self.rightScreen addSubview:self.rightImage];
+    UIGraphicsEndImageContext();
 }
 
-//- (void) getCoordinates {
-//    self.loc_manager = [[CLLocationManager alloc] init];
-//    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
-//    self.loc_manager.delegate = self;
-//    [self.loc_manager requestAlwaysAuthorization];
-//    [self.loc_manager startUpdatingLocation];
-//    [self.loc_manager startUpdatingHeading];
-//}
-//
-//
-//- (void) startHeadingEvents {
-//    if (!self.loc_manager) {
-//        self.loc_manager = [[CLLocationManager alloc] init];
-//    }
-//    self.loc_manager.desiredAccuracy = kCLLocationAccuracyBest;
-//    if (self.loc_manager.headingAvailable) {
-//        [self.loc_manager startUpdatingHeading];
-//    }
-//}
-
--(void)locationManager:(CLLocationManager *)manager
-   didUpdateToLocation:(CLLocation *)newLocation
-          fromLocation:(CLLocation *)oldLocation {
-    //    self.currLocation = newLocation;
-    NSLog(@"Got into here");
-    //    NSLog(@"%f, %f ", self.currLocation.coordinate.longitude, self.currLocation.coordinate.latitude);
+- (CABasicAnimation *) createResizeAnimation:(CGSize)newDimensions {
+    CABasicAnimation *resizeAnimation = [CABasicAnimation animationWithKeyPath:@"bounds.size"];
+    [resizeAnimation setToValue:[NSValue valueWithCGSize:newDimensions]];
+    resizeAnimation.fillMode = kCAFillModeForwards;
+    resizeAnimation.removedOnCompletion = NO;
+    return resizeAnimation;
 }
 
-- (void) locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
-    NSLog(@"%@", error);
+- (CGSize) getDimensionToScale:(double)distanceToImg imgWidth:(double)width imgHeight:(double)height {
+    double ratio = defaultNormDist / (distanceToImg);
+    return CGSizeMake(width * ratio, height * ratio);
 }
 
 - (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
     CLLocation *loc = locations[0];
-    NSLog(@"%f,%f", loc.coordinate.latitude, loc.coordinate.longitude);
+    self.currLocation = locations[0];
+//    NSLog(@"%f,%f", loc.coordinate.latitude, loc.coordinate.longitude);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
@@ -281,9 +269,9 @@ GLKVector3 xAxis;
     // Andrew, Ashley, call this function when you want to update the screen image
     CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
-    [self.leftImage.image drawAtPoint:CGPointZero];
-    CGContextRef context = UIGraphicsGetCurrentContext();
     if (drawing){
+        [self.leftImage.image drawAtPoint:CGPointZero];
+        CGContextRef context = UIGraphicsGetCurrentContext();
         if (!self.currentLine){
             self.currentLine = [UIBezierPath bezierPath];
             [self.currentLine moveToPoint:CGPointMake(rect.size.width/2, rect.size.height/2)];
@@ -306,6 +294,8 @@ GLKVector3 xAxis;
         [self.rightScreen addSubview:self.rightImage];
         UIGraphicsEndImageContext();
     } else {
+        
+        CGContextRef context = UIGraphicsGetCurrentContext();
         [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,
                                                      coordinate.y + rect.size.height/2)];
         [self.currentLine setLineWidth:3.0];
@@ -323,30 +313,30 @@ GLKVector3 xAxis;
         [self.rightScreen addSubview:self.rightImage];
         UIGraphicsEndImageContext();
         
-//        self.currentLine = nil;
+        self.currentLine = nil;
         CLLocationCoordinate2D loc = self.currLocation.coordinate;
         [self saveImage:image withLong:loc.longitude withLat:loc.latitude withOrient:self.currHeading.trueHeading];
     }
     
 }
 
-- (void)addCurrentLine{
-    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
-    UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
-    [self.leftImage.image drawAtPoint:CGPointZero];
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [[UIColor redColor] setStroke];
-    [self.currentLine stroke];
-    CGContextAddPath(context,self.currentLine.CGPath);
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    self.leftImage =[[UIImageView alloc] initWithImage:image];
-    [self.leftScreen addSubview:self.leftImage];
-    self.rightImage = [[UIImageView alloc] initWithImage:image];
-    [self.rightScreen addSubview:self.rightImage];
-    //        UIGraphicsPopContext();
-    UIGraphicsEndImageContext();
-}
-    
+//- (void)addCurrentLine{
+//    CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+//    UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
+//    [self.leftImage.image drawAtPoint:CGPointZero];
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    [[UIColor redColor] setStroke];
+//    [self.currentLine stroke];
+//    CGContextAddPath(context,self.currentLine.CGPath);
+//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//    self.leftImage =[[UIImageView alloc] initWithImage:image];
+//    [self.leftScreen addSubview:self.leftImage];
+//    self.rightImage = [[UIImageView alloc] initWithImage:image];
+//    [self.rightScreen addSubview:self.rightImage];
+//    //        UIGraphicsPopContext();
+//    UIGraphicsEndImageContext();
+//}
+
 - (void)didConnectDevice:(NSNotification *)notification {
     NSLog(@"connected device");
 }
