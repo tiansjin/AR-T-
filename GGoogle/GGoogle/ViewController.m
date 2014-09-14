@@ -408,9 +408,14 @@ int VECTORSCALE = 1000;
         NSLog(@"we started drawing");
     }
     else {
-        isDrawing = false;
-        lastVector = true;
-        NSLog(@"we stopped drawing");
+        if (isDrawing) {
+            isDrawing = false;
+            lastVector = true;
+            NSLog(@"we stopped drawing");
+        } else {
+            NSLog(@"ignored pose change since we weren't drawing");
+        }
+        
     }
 }
 
