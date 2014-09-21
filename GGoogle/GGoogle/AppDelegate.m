@@ -24,6 +24,7 @@
     [[TLMHub sharedHub] setApplicationIdentifier:@"com.example.aart"];
     // Call attachToAdjacent to begin looking for Myos to pair with.
     //[[TLMHub sharedHub] attachToAdjacent];
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     return YES;
 }
 

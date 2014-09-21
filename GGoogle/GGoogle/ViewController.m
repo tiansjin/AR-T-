@@ -25,9 +25,12 @@
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic, strong) UIBezierPath *currentLine;
+@property int count;
 
 @property (nonatomic, strong) NSMutableArray *imageArray;
 @property (nonatomic, strong) NSMutableArray *layerArray;
+
+@property (nonatomic, strong) Image *minionImg;
 
 
 @end
@@ -111,13 +114,21 @@ const int YSCALE = 500;
     self.loc_manager = [[CLLocationManager alloc] init];
     self.loc_manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
     self.loc_manager.delegate = self;
-//    [self.loc_manager requestAlwaysAuthorization];
+    [self.loc_manager requestAlwaysAuthorization];
     self.loc_manager.distanceFilter = kCLDistanceFilterNone;
     [self.loc_manager startUpdatingLocation];
     [self.loc_manager startUpdatingHeading];
     
-    self.imageArray = [[NSMutableArray alloc] initWithArray:@[[UIImage imageNamed:@"testing.png"], [UIImage imageNamed:@"minion.png"]]];
-    self.layerArray = [[NSMutableArray alloc] initWithArray:@[[[CALayer alloc] init], [[CALayer alloc] init], [[CALayer alloc] init], [[CALayer alloc] init]]];
+    self.minionImg = [NSEntityDescription insertNewObjectForEntityForName:@"Image"
+                                                   inManagedObjectContext:self.managedObjectContext];;
+    self.minionImg.image = UIImagePNGRepresentation([UIImage imageNamed:@"minion.png"]);
+    self.minionImg.orientation = [NSNumber numberWithDouble: 120.0];
+    self.minionImg.latitude = [NSNumber numberWithDouble: 0.0];
+    self.minionImg.latitude = [NSNumber numberWithDouble: 0.0];
+    
+//    self.imageArray = [[NSMutableArray alloc] initWithArray:@[[UIImage imageNamed:@"testing.png"], [UIImage imageNamed:@"minion.png"]]];
+//    self.layerArray = [[NSMutableArray alloc] initWithArray:@[[[CALayer alloc] init], [[CALayer alloc] init], [[CALayer alloc] init], [[CALayer alloc] init]]];
+    [self setupImagesNearby];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
@@ -196,12 +207,54 @@ const int YSCALE = 500;
 //    NSLog(@"%f, %f", self.currLocation.coordinate.latitude, self.currLocation.coordinate.longitude);
 }
 
-- (void) renderImagesNearBy {
+- (void) setupImagesNearby{
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription
+                                              entityForName:@"Image" inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    
     
 //    NSArray *constraints = [self getDistanceAllowedFromLoc: self.currLocation];
 //    NSPredicate *queryPredicate = [NSPredicate predicateWithFormat:@"(longitude > %f) AND (longitude < %f) AND (latitude > %f) AND (latitude < %f)",
 //                                   constraints[0], constraints[2], constraints[3], constraints[1]];
-//    NSArray *nearImages = [self fetchImages:queryPredicate]; //get images
+    self.imageArray =[self.managedObjectContext executeFetchRequest:request error:nil];
+//    [self fetchImages:queryPredicate]; //get images
+//    [self.imageArray addObject:self.minionImg];
+    self.layerArray = [[NSMutableArray alloc] init];
+    for (int i = 0; i < [self.imageArray count]; i ++){
+        [self.layerArray addObject:[CALayer layer]];
+        [self.layerArray addObject:[CALayer layer]];
+    }
+    
+}
+
+- (void) renderImagesNearBy {
+
+    int i = 0;
+    for (Image *data in self.imageArray) {
+        UIImage *image = [UIImage imageWithData:data.image];
+        CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+        //UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
+        CGPoint rectangleAnchor;
+        if (-30 < data.orientation.doubleValue - (self.currHeading.trueHeading) < 30) {
+            rectangleAnchor.x = (((data.orientation.doubleValue - (self.currHeading.trueHeading)) + 30) / 60) * self.view.frame.size.width/2;
+        } else {
+            rectangleAnchor.x = -500;
+        }
+//        if (rectangleAnchor.x > (0 - image.size.width) && rectangleAnchor.x < (self.leftScreen.frame.size.width + image.size.width)) {
+        if (-100 < rectangleAnchor.x && rectangleAnchor.x < 160) {
+            rectangleAnchor.y = self.view.frame.size.height/2 - image.size.height/2;
+            float angle = -(180 - (self.currHeading.trueHeading));
+            [self rotateImage:image rotationAngle: angle placeAt:rectangleAnchor atIndex:i];
+        } else {
+            [self.layerArray[i] removeFromSuperlayer];
+            [self.layerArray[i+1] removeFromSuperlayer];
+        }
+        i += 2;
+    }
+
+    
 //    for (Image *image in nearImages) {
 //        double distanceToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude
 //                                                 picLat:image.latitude.doubleValue picLong:image.longitude.doubleValue];
@@ -209,23 +262,23 @@ const int YSCALE = 500;
 //    CALayer *layer = [CALayer layer];
 
 //    UIImage *rectangle = [UIImage imageNamed:@"testing.png"];
-    int i = 0;
-    int degree_count = 0;
-    for (UIImage *image in self.imageArray) {
-        CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
-        UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
-        CGPoint rectangleAnchor;
-        if (-20 < 180 * degree_count - (self.currHeading.trueHeading + 100) < 20) {
-            rectangleAnchor.x = (((180 * degree_count - (self.currHeading.trueHeading + 100)) + 20) / 40) * self.view.frame.size.width/2;
-        } else {
-            rectangleAnchor.x = -500;
-        }
-        rectangleAnchor.y = self.view.frame.size.height/2 - image.size.height/2;
-        float angle = -(180*degree_count - (self.currHeading.trueHeading + 100));
-        [self rotateImage:image rotationAngle: angle placeAt:rectangleAnchor atIndex:i];
-        i += 2;
-        degree_count += 1;
-    }
+//    int i = 0;
+//    int degree_count = 0;
+//    for (UIImage *image in self.imageArray) {
+//        CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
+//        //UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
+//        CGPoint rectangleAnchor;
+//        if (-20 < 180 * degree_count - (self.currHeading.trueHeading + 100) < 20) {
+//            rectangleAnchor.x = (((180 * degree_count - (self.currHeading.trueHeading + 100)) + 20) / 40) * self.view.frame.size.width/2;
+//        } else {
+//            rectangleAnchor.x = -500;
+//        }
+//        rectangleAnchor.y = self.view.frame.size.height/2 - image.size.height/2;
+//        float angle = -(180*degree_count - (self.currHeading.trueHeading + 100));
+//        [self rotateImage:image rotationAngle: angle placeAt:rectangleAnchor atIndex:i];
+//        i += 2;
+//        degree_count += 1;
+//    }
     
 //    double distToImg = [self getDistanceFromLoc:self.currLocation.coordinate.latitude longitude:self.currLocation.coordinate.longitude picLat:39.952331 picLong:-75.190505];
 //    CGSize resizeDimensions = [self getDimensionToScale:distToImg imgWidth:rectangle.size.width imgHeight:rectangle.size.height];
@@ -358,29 +411,38 @@ const int YSCALE = 500;
     CGRect rect = CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height);
     if (drawing){
         if (!self.currentLine){
+            self.count = 0;
             self.currentLine = [UIBezierPath bezierPath];
             [self.currentLine moveToPoint:CGPointMake(coordinate.x + rect.size.width/2,
                                                                   coordinate.y + rect.size.height/2)];
         } else {
+            self.count++;
             [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,coordinate.y + rect.size.height/2)];
         }
     } else {
-        UIGraphicsBeginImageContextWithOptions(rect.size, YES, 0);
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,
-                                                     coordinate.y + rect.size.height/2)];
-        [self.currentLine setLineWidth:3.0];
-        [self.currentLine setLineJoinStyle:kCGLineJoinBevel];
-        [[UIColor redColor] setStroke];
-        [self.currentLine stroke];
-        CGContextAddPath(context,self.currentLine.CGPath);
-        [[UIColor redColor] setStroke];
-        UIImage *saveImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
+        if (self.count > 5){
+            CGContextRef context = UIGraphicsGetCurrentContext();
+    //        UIGraphicsPushContext(context);
+            UIGraphicsBeginImageContext(rect.size); //now it's here.
+            [self.currentLine addLineToPoint:CGPointMake(coordinate.x + rect.size.width/2,
+                                                         coordinate.y + rect.size.height/2)];
+            [self.currentLine setLineWidth:3.0];
+            [self.currentLine setLineJoinStyle:kCGLineJoinBevel];
+            [[UIColor redColor] setStroke];
+            [self.currentLine stroke];
+            CGContextAddPath(context, self.currentLine.CGPath);
+            UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    //        UIGraphicsPopContext();
+            UIGraphicsEndImageContext();
+            
+            
         
+            CLLocationCoordinate2D loc = self.currLocation.coordinate;
+            [self saveImage:image withLong:loc.longitude withLat:loc.latitude withOrient:self.currHeading.trueHeading];
+            [self setupImagesNearby];
+        }
         self.currentLine = nil;
-        CLLocationCoordinate2D loc = self.currLocation.coordinate;
-        [self saveImage:saveImage withLong:loc.longitude withLat:loc.latitude withOrient:self.currHeading.trueHeading];
+        self.count = 0;
     }
     
 }
@@ -520,7 +582,7 @@ const int YSCALE = 500;
         return;
     }
     double delta = yaw - initialYaw;
-    double xmag = XSCALE*tan(delta);
+    double xmag = -XSCALE*tan(delta);
     
     // check for special case of last vector
     if (isLastVector) {
